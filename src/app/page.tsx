@@ -61,19 +61,19 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-accent" />
       </section>
 
-      {/* ── TRUST BAR — fixed mobile dividers ────────────────────────── */}
-      <section style={{ background: NAVY_MID, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+      {/* ── TRUST BAR — no divider lines ─────────────────────────────── */}
+      <section style={{ background: NAVY_MID }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <div className="grid grid-cols-2 md:grid-cols-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
             {[
               { val: "IKO Certified", sub: "International standard"     },
               { val: "#1 in Bonaire", sub: "Google Reviews"             },
               { val: "Est. 2001",     sub: "First school on the island" },
               { val: "5-Star Rated",  sub: "Verified by students"       },
             ].map((b, i) => (
-              <div key={i} className={`flex flex-col items-center text-center py-4 md:py-6 px-3 md:px-4 ${i % 2 === 0 ? "border-r border-white/10" : ""} ${i < 2 ? "border-b md:border-b-0 border-white/10" : ""}`}>
+              <div key={i} className="flex flex-col items-center text-center py-5 md:py-6 px-3">
                 <span className="font-display font-black text-white text-xs md:text-sm uppercase tracking-widest mb-1">{b.val}</span>
-                <span className="text-white/70 font-body text-[10px] md:text-xs uppercase tracking-wider">{b.sub}</span>
+                <span className="text-white/60 font-body text-[10px] md:text-xs uppercase tracking-wider">{b.sub}</span>
               </div>
             ))}
           </div>

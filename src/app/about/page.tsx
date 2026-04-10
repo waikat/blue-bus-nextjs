@@ -79,17 +79,17 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── NUMBERS — fixed mobile dividers ──────────────────────────── */}
+      {/* ── NUMBERS — no divider lines ───────────────────────────────── */}
       <section style={{ background: NAVY_MID }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <div className="grid grid-cols-2 md:grid-cols-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
             {[
               { num: "2001", label: "First kite school on Bonaire" },
               { num: "25+",  label: "Years on the same beach" },
               { num: "10K+", label: "Students from around the world" },
               { num: "50+",  label: "Countries represented" },
             ].map((s, i) => (
-              <div key={i} className={`flex flex-col items-center text-center py-8 px-4 ${i % 2 === 0 ? "border-r border-white/10" : ""} ${i < 2 ? "border-b md:border-b-0 border-white/10" : ""}`}>
+              <div key={i} className="flex flex-col items-center text-center py-8 px-4">
                 <span className="font-display font-black text-white leading-none mb-2 text-[clamp(28px,4vw,52px)]">{s.num}</span>
                 <span className="text-white/60 font-body text-[10px] md:text-xs uppercase tracking-wider text-center">{s.label}</span>
               </div>
@@ -106,7 +106,6 @@ export default function AboutPage() {
       {/* ── THE KBB FAMILY ───────────────────────────────────────────── */}
       <section className="bg-background py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="mb-16">
             <motion.p variants={fadeUp} className="category-label mb-4 block">The people on the beach</motion.p>
             <motion.h2 variants={fadeUp} className="font-display font-black text-foreground uppercase tracking-tighter text-[clamp(36px,6vw,80px)] leading-[0.87]">The KBB Family</motion.h2>
@@ -129,7 +128,7 @@ export default function AboutPage() {
 
           <img src={beachSetup.src} alt="Daily beach setup at Atlantis Beach" className="w-full object-cover border-2 border-t-0 border-foreground" style={{ height: "clamp(180px, 25vw, 320px)" }} />
 
-          {/* Instructors — borders unified to border-foreground */}
+          {/* Instructors — all borders unified */}
           <div className="border-2 border-t-0 border-foreground">
             <div className="p-8 md:p-10 border-b-2 border-foreground">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">

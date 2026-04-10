@@ -41,19 +41,19 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
 
   return (
     <>
-      {/* STINAPA utility bar — homepage only */}
+      {/* STINAPA utility bar — homepage only, compact on mobile */}
       {isHomePage && (
         <div
-          className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-2 ${
+          className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-1.5 md:py-2 ${
             scrolled ? "h-0 opacity-0 overflow-hidden py-0" : "opacity-100"
           }`}
           style={{ background: "linear-gradient(90deg, #4caf50, #f5c518, #e8643c)", color: "#1a1a1a" }}
         >
           <div className="max-w-7xl mx-auto px-4 text-center">
-            <p className="font-body font-bold text-xs md:text-sm uppercase tracking-wider">
+            <p className="font-body font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-wide leading-snug">
               ⚠️ Mandatory STINAPA Nature Fee Required.{" "}
-              <a href="https://stinapa.bonairenaturefee.org/" target="_blank" rel="noopener noreferrer" className="underline decoration-2 underline-offset-4 hover:opacity-70 transition-opacity">
-                Purchase Online
+              <a href="https://stinapa.bonairenaturefee.org/" target="_blank" rel="noopener noreferrer" className="underline decoration-2 underline-offset-2 hover:opacity-70 transition-opacity">
+                Purchase online
               </a>
             </p>
           </div>
@@ -61,7 +61,7 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
       )}
 
       {/* Main nav */}
-      <header className={`fixed left-0 right-0 z-40 bg-primary transition-all duration-300 ${isHomePage && !scrolled ? "top-8" : "top-0"}`}>
+      <header className={`fixed left-0 right-0 z-40 bg-primary transition-all duration-300 ${isHomePage && !scrolled ? "top-7 md:top-8" : "top-0"}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 md:h-20 px-4 sm:px-6 lg:px-8">
 
           <Link href="/" aria-label="Kiteboarding Bonaire Home">
@@ -70,11 +70,7 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
 
           <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
             {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`font-display font-black text-sm uppercase tracking-[0.15em] transition-colors hover:text-accent ${pathname === link.href ? "text-accent" : "text-primary-foreground"}`}
-              >
+              <Link key={link.href} href={link.href} className={`font-display font-black text-sm uppercase tracking-[0.15em] transition-colors hover:text-accent ${pathname === link.href ? "text-accent" : "text-primary-foreground"}`}>
                 {link.label}
               </Link>
             ))}
@@ -84,20 +80,11 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
             <div className="text-primary-foreground">
               <WindWidget onClick={onWeatherClick} />
             </div>
-            <button onClick={() => setBookingOpen(true)} className="btn-cyan text-sm py-2.5 px-6">
-              Book Now
-            </button>
+            <button onClick={() => setBookingOpen(true)} className="btn-cyan text-sm py-2.5 px-6">Book Now</button>
           </div>
 
-          <button
-            className="md:hidden p-2"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileOpen
-              ? <X className="w-6 h-6 text-primary-foreground" />
-              : <Menu className="w-6 h-6 text-primary-foreground" />
-            }
+          <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)} aria-label={mobileOpen ? "Close menu" : "Open menu"}>
+            {mobileOpen ? <X className="w-6 h-6 text-primary-foreground" /> : <Menu className="w-6 h-6 text-primary-foreground" />}
           </button>
         </div>
       </header>
@@ -105,10 +92,7 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
       {/* Mobile overlay */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-primary flex flex-col items-center justify-center gap-6"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-primary flex flex-col items-center justify-center gap-6">
             <button className="absolute top-5 right-5 p-2" onClick={() => setMobileOpen(false)} aria-label="Close menu">
               <X className="w-8 h-8 text-primary-foreground" />
             </button>
@@ -116,25 +100,13 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
               <img src={logo.src} alt="Kiteboarding Bonaire" className="h-14 w-auto" />
             </Link>
             {navLinks.map((link, i) => (
-              <motion.div
-                key={link.href}
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-                className="w-full"
-              >
-                <Link
-                  href={link.href}
-                  className={`block w-full text-center py-4 font-display font-black text-3xl uppercase tracking-[0.1em] transition-colors active:bg-white/10 ${pathname === link.href ? "text-accent" : "text-primary-foreground"}`}
-                  onClick={() => setMobileOpen(false)}
-                >
+              <motion.div key={link.href} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="w-full">
+                <Link href={link.href} className={`block w-full text-center py-4 font-display font-black text-3xl uppercase tracking-[0.1em] transition-colors active:bg-white/10 ${pathname === link.href ? "text-accent" : "text-primary-foreground"}`} onClick={() => setMobileOpen(false)}>
                   {link.label}
                 </Link>
               </motion.div>
             ))}
-            <motion.button
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
-              onClick={() => { setMobileOpen(false); setBookingOpen(true); }}
-              className="btn-cyan mt-6 text-lg w-3/4 max-w-xs"
-            >
+            <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} onClick={() => { setMobileOpen(false); setBookingOpen(true); }} className="btn-cyan mt-6 text-lg w-3/4 max-w-xs">
               Book Now
             </motion.button>
           </motion.div>
