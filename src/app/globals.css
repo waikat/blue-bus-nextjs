@@ -1,26 +1,246 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* ── Fonts ──────────────────────────────────────────────────────── */
+  --font-display: "Outfit", system-ui, sans-serif;
+  --font-body:    "Raleway", system-ui, sans-serif;
+
+  /* ── Colors — all tokens used as Tailwind utilities ─────────────── */
+  --color-background:           hsl(var(--background));
+  --color-foreground:           hsl(var(--foreground));
+
+  --color-card:                 hsl(var(--card));
+  --color-card-foreground:      hsl(var(--card-foreground));
+
+  --color-popover:              hsl(var(--popover));
+  --color-popover-foreground:   hsl(var(--popover-foreground));
+
+  --color-primary:              hsl(var(--primary));
+  --color-primary-foreground:   hsl(var(--primary-foreground));
+
+  --color-secondary:            hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted:                hsl(var(--muted));
+  --color-muted-foreground:     hsl(var(--muted-foreground));
+
+  --color-accent:               hsl(var(--accent));
+  --color-accent-foreground:    hsl(var(--accent-foreground));
+
+  --color-destructive:          hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border:               hsl(var(--border));
+  --color-input:                hsl(var(--input));
+  --color-ring:                 hsl(var(--ring));
+
+  --color-kbb-black:            hsl(var(--kbb-black));
+  --color-kbb-white:            hsl(var(--kbb-white));
+  --color-seafoam:              hsl(var(--seafoam));
+  --color-coral:                hsl(var(--coral));
+
+  --color-sidebar:              hsl(var(--sidebar-background));
+  --color-sidebar-foreground:   hsl(var(--sidebar-foreground));
+  --color-sidebar-primary:      hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent:       hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border:       hsl(var(--sidebar-border));
+  --color-sidebar-ring:         hsl(var(--sidebar-ring));
+
+  /* ── Border radius — all zero for KBB sharp identity ────────────── */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── CSS Variables ───────────────────────────────────────────────────────── */
+:root {
+  --background:          0 0% 100%;
+  --foreground:          0 0% 7%;
+
+  --card:                0 0% 100%;
+  --card-foreground:     0 0% 7%;
+
+  --popover:             0 0% 100%;
+  --popover-foreground:  0 0% 7%;
+
+  --primary:             211 100% 22%;
+  --primary-foreground:  0 0% 100%;
+
+  --secondary:           211 100% 30%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted:               210 15% 96%;
+  --muted-foreground:    215 12% 40%;
+
+  --accent:              186 100% 42%;
+  --accent-foreground:   0 0% 100%;
+
+  --destructive:         0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border:              0 0% 88%;
+  --input:               0 0% 88%;
+  --ring:                211 100% 22%;
+
+  --radius:              0px;
+
+  --navy:                211 100% 22%;
+  --cyan:                186 100% 42%;
+  --kbb-black:           0 0% 7%;
+  --kbb-white:           0 0% 100%;
+  --seafoam:             163 56% 52%;
+  --coral:               18  84% 54%;
+
+  --sidebar-background:  0 0% 98%;
+  --sidebar-foreground:  240 5.3% 26.1%;
+  --sidebar-primary:     240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent:      240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border:      220 13% 91%;
+  --sidebar-ring:        217.2 91.2% 59.8%;
+}
+
+.dark {
+  --background:          211 30% 8%;
+  --foreground:          0 0% 95%;
+  --card:                211 30% 12%;
+  --card-foreground:     0 0% 95%;
+  --popover:             211 30% 12%;
+  --popover-foreground:  0 0% 95%;
+  --primary:             186 100% 42%;
+  --primary-foreground:  211 30% 8%;
+  --secondary:           211 100% 30%;
+  --secondary-foreground: 0 0% 100%;
+  --muted:               211 25% 18%;
+  --muted-foreground:    215 15% 60%;
+  --accent:              186 100% 42%;
+  --accent-foreground:   211 30% 8%;
+  --destructive:         0 63% 31%;
+  --destructive-foreground: 0 0% 100%;
+  --border:              211 25% 20%;
+  --input:               211 25% 20%;
+  --ring:                186 100% 42%;
+  --sidebar-background:  240 5.9% 10%;
+  --sidebar-foreground:  240 4.8% 95.9%;
+  --sidebar-primary:     224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent:      240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border:      240 3.7% 15.9%;
+  --sidebar-ring:        217.2 91.2% 59.8%;
+}
+
+/* ── Base styles ─────────────────────────────────────────────────────────── */
+* {
+  border-color: hsl(var(--border));
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+/* ── Font utility classes ────────────────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+.font-body    { font-family: var(--font-body); }
+
+/* ── Custom component classes ────────────────────────────────────────────── */
+.btn-cyan {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+  padding: 1rem 2rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid hsl(var(--accent));
+  transition: all 0.2s;
+  display: inline-block;
+  text-align: center;
+}
+.btn-cyan:hover { filter: brightness(1.1); }
+
+.btn-outline-white {
+  background-color: transparent;
+  color: white;
+  padding: 1rem 2rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid white;
+  transition: all 0.2s;
+  display: inline-block;
+  text-align: center;
+}
+.btn-outline-white:hover { background-color: rgba(255,255,255,0.1); }
+
+.btn-outline-dark {
+  background-color: transparent;
+  color: hsl(var(--foreground));
+  padding: 1rem 2rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid hsl(var(--foreground));
+  transition: all 0.2s;
+  display: inline-block;
+  text-align: center;
+}
+.btn-outline-dark:hover {
+  background-color: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+
+.category-label {
+  color: hsl(var(--accent));
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+}
+
+.col-divider-light { border-color: rgba(0,0,0,0.08); }
+@media (min-width: 768px) {
+  .col-divider-light { border-left-width: 1px; padding-left: 3rem; }
+}
+
+.col-divider-dark { border-color: rgba(255,255,255,0.12); }
+@media (min-width: 768px) {
+  .col-divider-dark { border-left-width: 1px; padding-left: 3rem; }
+}
+
+.col-divider-light-sm { border-color: rgba(0,0,0,0.08); }
+@media (min-width: 768px) {
+  .col-divider-light-sm { border-left-width: 1px; padding-left: 2rem; }
+}
+
+.col-divider-dark-sm { border-color: rgba(255,255,255,0.12); }
+@media (min-width: 768px) {
+  .col-divider-dark-sm { border-left-width: 1px; padding-left: 2rem; }
+}
+
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
