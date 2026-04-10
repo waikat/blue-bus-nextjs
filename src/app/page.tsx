@@ -17,46 +17,15 @@ const NAVY_MID  = "hsl(211,100%,16%)";
 const BOOKING_ALL_LESSONS_ID = "g370000000b0000000c022b3d";
 
 const testimonials = [
-  {
-    name:    "Dominik Eggenschwiler",
-    flag:    "🇨🇭",
-    country: "Switzerland",
-    quote:   "Owner Rommel goes above and beyond, ensuring every guest feels cared for. With rescue boats always on hand, you can kite with confidence. You might even get the chance to kite alongside playful dolphins.",
-  },
-  {
-    name:    "Jenna Vreugdenhil",
-    flag:    "🇳🇱",
-    country: "Netherlands",
-    quote:   "Absolutely loved taking classes here. I was lucky enough to have Rommel as my instructor and had such a great time with him. Aside from having genuine fun, my confidence grew thanks to his super helpful instructions.",
-  },
-  {
-    name:    "Elena Ribot",
-    flag:    "🇪🇸",
-    country: "Spain",
-    quote:   "Within 5 lessons I could kite independently. I had little experience and was quite scared. The atmosphere is great, everyone helps each other and they have a dedicated rescue service. Thank you Kiteboarding Bonaire!",
-  },
-  {
-    name:    "Ella",
-    flag:    "🌍",
-    country: "Local Guide",
-    quote:   "I love coming down to this area and watching the boarders. There are often world-class ones here. The community seems very friendly. One of the instructors came over and we chatted and watched for a while. So much fun.",
-  },
-  {
-    name:    "Robert",
-    flag:    "🇳🇱",
-    country: "Nederland",
-    quote:   "Prachtige locatie en hele vriendelijke mensen, mooi groot strand. Met alle geduld en aandacht werden de lessen gegeven. Absolute aanrader om hier je lessen te gaan nemen of lekker bezig te gaan op het water!",
-  },
+  { name: "Dominik Eggenschwiler", flag: "🇨🇭", country: "Switzerland", quote: "Owner Rommel goes above and beyond, ensuring every guest feels cared for. With rescue boats always on hand, you can kite with confidence. You might even get the chance to kite alongside playful dolphins." },
+  { name: "Jenna Vreugdenhil",     flag: "🇳🇱", country: "Netherlands", quote: "Absolutely loved taking classes here. I was lucky enough to have Rommel as my instructor and had such a great time with him. Aside from having genuine fun, my confidence grew thanks to his super helpful instructions." },
+  { name: "Elena Ribot",           flag: "🇪🇸", country: "Spain",       quote: "Within 5 lessons I could kite independently. I had little experience and was quite scared. The atmosphere is great, everyone helps each other and they have a dedicated rescue service. Thank you Kiteboarding Bonaire!" },
+  { name: "Ella",                  flag: "🌍", country: "Local Guide",  quote: "I love coming down to this area and watching the boarders. There are often world-class ones here. The community seems very friendly. One of the instructors came over and we chatted and watched for a while. So much fun." },
+  { name: "Robert",                flag: "🇳🇱", country: "Nederland",   quote: "Prachtige locatie en hele vriendelijke mensen, mooi groot strand. Met alle geduld en aandacht werden de lessen gegeven. Absolute aanrader om hier je lessen te gaan nemen of lekker bezig te gaan op het water!" },
 ];
 
-const fadeUp = {
-  hidden:  { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } },
-};
-const stagger = {
-  hidden:  {},
-  visible: { transition: { staggerChildren: 0.12 } },
-};
+const fadeUp = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
 
 export default function HomePage() {
   const [bookingOpen,  setBookingOpen]  = useState(false);
@@ -66,7 +35,6 @@ export default function HomePage() {
 
   const prev = () => setActiveReview((i) => (i - 1 + testimonials.length) % testimonials.length);
   const next = () => setActiveReview((i) => (i + 1) % testimonials.length);
-
   const cards = [
     testimonials[(activeReview - 1 + testimonials.length) % testimonials.length],
     testimonials[activeReview],
@@ -81,15 +49,9 @@ export default function HomePage() {
         <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(5,18,40,0.62) 0%, rgba(5,18,40,0.42) 50%, rgba(5,18,40,0.88) 100%)" }} />
         <div className="relative z-10 px-6 sm:px-10 max-w-5xl mx-auto w-full">
           <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.p variants={fadeUp} className="text-accent font-display font-black text-xs uppercase tracking-[0.35em] mb-8">
-              Est. 2001. Bonaire's First Kite School.
-            </motion.p>
-            <motion.h1 variants={fadeUp} className="font-display font-black text-white uppercase tracking-tighter mb-8" style={{ fontSize: "clamp(58px, 11vw, 148px)", lineHeight: 0.95 }}>
-              THE<br />BLUE BUS
-            </motion.h1>
-            <motion.p variants={fadeUp} className="text-white/80 font-body text-sm md:text-base uppercase tracking-[0.22em] mb-12 mx-auto max-w-[400px]">
-              Bonaire's original kite school.<br />On the same beach since 2001.
-            </motion.p>
+            <motion.p variants={fadeUp} className="text-accent font-display font-black text-xs uppercase tracking-[0.35em] mb-8">Est. 2001. Bonaire's First Kite School.</motion.p>
+            <motion.h1 variants={fadeUp} className="font-display font-black text-white uppercase tracking-tighter mb-8" style={{ fontSize: "clamp(58px, 11vw, 148px)", lineHeight: 0.95 }}>THE<br />BLUE BUS</motion.h1>
+            <motion.p variants={fadeUp} className="text-white/80 font-body text-sm md:text-base uppercase tracking-[0.22em] mb-12 mx-auto max-w-[400px]">Bonaire's original kite school.<br />On the same beach since 2001.</motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap gap-4 justify-center">
               <button onClick={() => setBookingOpen(true)} className="btn-cyan text-sm w-full sm:w-auto">Book Your Lesson</button>
               <Link href="/rentals" className="btn-outline-white text-sm w-full sm:w-auto">Rent Equipment</Link>
@@ -99,17 +61,17 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-accent" />
       </section>
 
-      {/* ── TRUST BAR ────────────────────────────────────────────────── */}
+      {/* ── TRUST BAR — fixed mobile dividers ────────────────────────── */}
       <section style={{ background: NAVY_MID, borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
+          <div className="grid grid-cols-2 md:grid-cols-4">
             {[
-              { val: "IKO Certified", sub: "International standard"      },
-              { val: "#1 in Bonaire", sub: "Google Reviews"              },
-              { val: "Est. 2001",     sub: "First school on the island"  },
-              { val: "5-Star Rated",  sub: "Verified by students"        },
+              { val: "IKO Certified", sub: "International standard"     },
+              { val: "#1 in Bonaire", sub: "Google Reviews"             },
+              { val: "Est. 2001",     sub: "First school on the island" },
+              { val: "5-Star Rated",  sub: "Verified by students"       },
             ].map((b, i) => (
-              <div key={i} className="flex flex-col items-center text-center py-4 md:py-6 px-3 md:px-4">
+              <div key={i} className={`flex flex-col items-center text-center py-4 md:py-6 px-3 md:px-4 ${i % 2 === 0 ? "border-r border-white/10" : ""} ${i < 2 ? "border-b md:border-b-0 border-white/10" : ""}`}>
                 <span className="font-display font-black text-white text-xs md:text-sm uppercase tracking-widest mb-1">{b.val}</span>
                 <span className="text-white/70 font-body text-[10px] md:text-xs uppercase tracking-wider">{b.sub}</span>
               </div>
@@ -123,9 +85,7 @@ export default function HomePage() {
         <div className="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="mb-10">
             <motion.p variants={fadeUp} className="category-label mb-3">Explore</motion.p>
-            <motion.h2 variants={fadeUp} className="font-display font-black text-foreground uppercase tracking-tighter leading-[0.95]" style={{ fontSize: "clamp(36px, 5vw, 72px)" }}>
-              Everything<br />We Do
-            </motion.h2>
+            <motion.h2 variants={fadeUp} className="font-display font-black text-foreground uppercase tracking-tighter leading-[0.95]" style={{ fontSize: "clamp(36px, 5vw, 72px)" }}>Everything<br />We Do</motion.h2>
           </motion.div>
 
           {/* Desktop bento */}
@@ -170,19 +130,13 @@ export default function HomePage() {
                   <p className="font-display font-black text-white/70 text-xs uppercase tracking-widest mb-2">Live Wind</p>
                   {!wind.isLoading && !wind.error ? (
                     <>
-                      <p className="font-display font-black text-white leading-none mb-1" style={{ fontSize: "clamp(40px, 4vw, 56px)" }}>
-                        {wind.speed}<span className="text-lg font-body font-normal text-white/70 ml-1">kts</span>
-                      </p>
+                      <p className="font-display font-black text-white leading-none mb-1" style={{ fontSize: "clamp(40px, 4vw, 56px)" }}>{wind.speed}<span className="text-lg font-body font-normal text-white/70 ml-1">kts</span></p>
                       <p className="text-white/70 text-xs font-body uppercase tracking-wider">{wind.directionText}. Gust {wind.gust}kt.</p>
                     </>
                   ) : (
                     <div>
                       <p className="text-white/70 text-sm font-body uppercase tracking-wider mb-2">{wind.isLoading ? "Loading..." : "Station offline"}</p>
-                      {wind.error && (
-                        <a href="https://www.windguru.cz/209061" target="_blank" rel="noreferrer" className="text-accent text-xs underline underline-offset-4 font-body" onClick={(e) => e.stopPropagation()}>
-                          Check Windguru ↗
-                        </a>
-                      )}
+                      {wind.error && <a href="https://www.windguru.cz/209061" target="_blank" rel="noreferrer" className="text-accent text-xs underline underline-offset-4 font-body" onClick={(e) => e.stopPropagation()}>Check Windguru ↗</a>}
                     </div>
                   )}
                 </div>
@@ -227,11 +181,7 @@ export default function HomePage() {
                   ) : (
                     <div>
                       <p className="text-white/70 text-sm font-body uppercase tracking-wider mb-1">{wind.isLoading ? "Loading..." : "Offline"}</p>
-                      {wind.error && (
-                        <a href="https://www.windguru.cz/209061" target="_blank" rel="noreferrer" className="text-accent text-xs underline underline-offset-4 font-body" onClick={(e) => e.stopPropagation()}>
-                          Check Windguru ↗
-                        </a>
-                      )}
+                      {wind.error && <a href="https://www.windguru.cz/209061" target="_blank" rel="noreferrer" className="text-accent text-xs underline underline-offset-4 font-body" onClick={(e) => e.stopPropagation()}>Check Windguru ↗</a>}
                     </div>
                   )}
                 </div>
@@ -251,17 +201,11 @@ export default function HomePage() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 items-end">
             <div>
               <motion.p variants={fadeUp} className="category-label mb-6">Where we ride</motion.p>
-              <motion.h2 variants={fadeUp} className="font-display font-black text-white uppercase tracking-tighter" style={{ fontSize: "clamp(48px, 8vw, 110px)", lineHeight: 0.95 }}>
-                Atlantis<br />Beach
-              </motion.h2>
+              <motion.h2 variants={fadeUp} className="font-display font-black text-white uppercase tracking-tighter" style={{ fontSize: "clamp(48px, 8vw, 110px)", lineHeight: 0.95 }}>Atlantis<br />Beach</motion.h2>
             </div>
             <div className="col-divider-dark">
-              <motion.p variants={fadeUp} className="text-white/80 font-body text-lg leading-relaxed mb-5">
-                Consistent trade winds. Flat warm water. An offshore reef that keeps the chop down and the sessions long. Atlantis Beach is one of the best kite spots on the planet and it has been our home for over two decades.
-              </motion.p>
-              <motion.p variants={fadeUp} className="text-white/70 font-body text-base leading-relaxed">
-                We didn't just find this place. We helped build it into what it is today. Together with every rider who ever came here for the wind and left feeling something they couldn't quite explain.
-              </motion.p>
+              <motion.p variants={fadeUp} className="text-white/80 font-body text-lg leading-relaxed mb-5">Consistent trade winds. Flat warm water. An offshore reef that keeps the chop down and the sessions long. Atlantis Beach is one of the best kite spots on the planet and it has been our home for over two decades.</motion.p>
+              <motion.p variants={fadeUp} className="text-white/70 font-body text-base leading-relaxed">We didn't just find this place. We helped build it into what it is today. Together with every rider who ever came here for the wind and left feeling something they couldn't quite explain.</motion.p>
             </div>
           </motion.div>
         </div>
@@ -273,9 +217,7 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
             <div>
               <p className="category-label mb-4">Why Kiteboarding Bonaire</p>
-              <h2 className="font-display font-black text-white uppercase tracking-tighter" style={{ fontSize: "clamp(36px, 5vw, 72px)", lineHeight: 0.95 }}>
-                Three reasons<br />we're different
-              </h2>
+              <h2 className="font-display font-black text-white uppercase tracking-tighter" style={{ fontSize: "clamp(36px, 5vw, 72px)", lineHeight: 0.95 }}>Three reasons<br />we're different</h2>
             </div>
             <button onClick={() => setBookingOpen(true)} className="btn-cyan self-start md:self-auto flex-shrink-0">Book a Lesson</button>
           </div>
@@ -285,14 +227,7 @@ export default function HomePage() {
               { number: "02", title: "The Best Spot on Earth",   desc: "300+ wind days. Flat warm water. Steady trade winds. Atlantis Beach is the reason we built the school here and never left." },
               { number: "03", title: "Gear That Actually Works", desc: "New equipment every season. Whatever your level, you ride on kit that performs. Not whatever is left in storage from last year." },
             ].map((item, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }}
-                className={`p-8 md:p-10 ${i > 0 ? "col-divider-dark-sm" : ""}`}
-              >
+              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }} className={`p-8 md:p-10 ${i > 0 ? "col-divider-dark-sm" : ""}`}>
                 <p className="font-display font-black text-white/20 mb-4 select-none leading-none" style={{ fontSize: "clamp(64px, 8vw, 100px)" }}>{item.number}</p>
                 <div className="w-10 h-[3px] bg-accent mb-5" />
                 <h3 className="font-display font-black text-white uppercase tracking-tighter text-2xl leading-[0.95] mb-4">{item.title}</h3>
@@ -308,33 +243,15 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="text-center mb-16">
             <p className="category-label mb-4 block">Real reviews from Google</p>
-            <h2 className="font-display font-black text-foreground uppercase tracking-tighter" style={{ fontSize: "clamp(36px, 5vw, 68px)", lineHeight: 0.95 }}>
-              Stories from<br />the Water
-            </h2>
+            <h2 className="font-display font-black text-foreground uppercase tracking-tighter" style={{ fontSize: "clamp(36px, 5vw, 68px)", lineHeight: 0.95 }}>Stories from<br />the Water</h2>
           </div>
-
-          {/* Desktop 3-card */}
           <div className="hidden md:flex justify-center gap-6 items-center mb-16 min-h-[450px] py-4">
             {cards.map((t, idx) => {
               const isCenter = idx === 1;
               return (
-                <motion.div
-                  layout
-                  key={t.name}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={`relative flex flex-col transition-colors duration-300 ${
-                    isCenter
-                      ? "bg-white border-2 border-foreground shadow-2xl z-10 py-10 px-8 w-[400px]"
-                      : "bg-muted border border-foreground/10 py-8 px-6 opacity-60 w-[300px] scale-90"
-                  }`}
-                >
+                <motion.div layout key={t.name} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`relative flex flex-col transition-colors duration-300 ${isCenter ? "bg-white border-2 border-foreground shadow-2xl z-10 py-10 px-8 w-[400px]" : "bg-muted border border-foreground/10 py-8 px-6 opacity-60 w-[300px] scale-90"}`}>
                   <span className={`font-display font-black leading-none mb-4 select-none ${isCenter ? "text-accent text-6xl" : "text-foreground/30 text-5xl"}`}>"</span>
-                  {isCenter && (
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 text-accent fill-current" />)}
-                    </div>
-                  )}
+                  {isCenter && <div className="flex gap-1 mb-4">{[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 text-accent fill-current" />)}</div>}
                   <p className={`font-body leading-relaxed italic flex-1 mb-8 ${isCenter ? "text-foreground text-lg" : "text-foreground/70 text-base"}`}>{t.quote}</p>
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 flex items-center justify-center font-display font-black text-sm flex-shrink-0 ${isCenter ? "bg-foreground text-background" : "bg-foreground/20 text-foreground/60"}`}>{t.name[0]}</div>
@@ -347,22 +264,11 @@ export default function HomePage() {
               );
             })}
           </div>
-
-          {/* Mobile single card */}
           <div className="md:hidden mb-8">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={activeReview}
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.3 }}
-                className="bg-white border-2 border-foreground py-10 px-8"
-              >
+              <motion.div key={activeReview} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.3 }} className="bg-white border-2 border-foreground py-10 px-8">
                 <span className="font-display font-black text-accent text-6xl leading-none block mb-4">"</span>
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 text-accent fill-current" />)}
-                </div>
+                <div className="flex gap-1 mb-4">{[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 text-accent fill-current" />)}</div>
                 <p className="text-foreground font-body text-lg leading-relaxed italic mb-8">{testimonials[activeReview].quote}</p>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-foreground flex items-center justify-center font-display font-black text-background text-sm">{testimonials[activeReview].name[0]}</div>
@@ -374,23 +280,15 @@ export default function HomePage() {
               </motion.div>
             </AnimatePresence>
           </div>
-
-          {/* Controls */}
           <div className="flex items-center justify-center gap-6">
-            <button onClick={prev} className="w-10 h-10 border-2 border-foreground flex items-center justify-center hover:bg-foreground hover:text-background transition-colors" aria-label="Previous review">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
+            <button onClick={prev} className="w-10 h-10 border-2 border-foreground flex items-center justify-center hover:bg-foreground hover:text-background transition-colors" aria-label="Previous review"><ChevronLeft className="w-5 h-5" /></button>
             <div className="flex gap-2">
               {testimonials.map((_, i) => (
                 <button key={i} onClick={() => setActiveReview(i)} className={`transition-all duration-300 ${i === activeReview ? "w-6 h-2 bg-accent" : "w-2 h-2 bg-foreground/30 hover:bg-foreground/60"}`} aria-label={`Review ${i + 1}`} />
               ))}
             </div>
-            <button onClick={next} className="w-10 h-10 border-2 border-foreground flex items-center justify-center hover:bg-foreground hover:text-background transition-colors" aria-label="Next review">
-              <ChevronRight className="w-5 h-5" />
-            </button>
+            <button onClick={next} className="w-10 h-10 border-2 border-foreground flex items-center justify-center hover:bg-foreground hover:text-background transition-colors" aria-label="Next review"><ChevronRight className="w-5 h-5" /></button>
           </div>
-
-          {/* Google link */}
           <div className="flex justify-center mt-10">
             <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 border-2 border-foreground px-6 py-3 hover:bg-foreground hover:text-background transition-colors group">
               <div className="flex gap-0.5">{[...Array(5)].map((_, j) => <Star key={j} className="w-3.5 h-3.5 text-accent fill-current" />)}</div>
@@ -406,9 +304,7 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10">
             <div>
               <p className="category-label mb-5">Atlantis Beach, Bonaire</p>
-              <h2 className="font-display font-black text-white uppercase tracking-tighter" style={{ fontSize: "clamp(40px, 7vw, 100px)", lineHeight: 0.95 }}>
-                Ready to<br />Hit the Water?
-              </h2>
+              <h2 className="font-display font-black text-white uppercase tracking-tighter" style={{ fontSize: "clamp(40px, 7vw, 100px)", lineHeight: 0.95 }}>Ready to<br />Hit the Water?</h2>
             </div>
             <div className="flex flex-col gap-4 flex-shrink-0">
               <button onClick={() => setBookingOpen(true)} className="btn-cyan text-base w-full sm:w-auto whitespace-nowrap">Book Your Lesson →</button>

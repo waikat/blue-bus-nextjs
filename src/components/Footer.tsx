@@ -12,6 +12,7 @@ const WHATSAPP_NUMBER = "+5997015483";
 const WHATSAPP_URL    = `https://wa.me/5997015483?text=Hi!%20I'm%20interested%20in%20kitesurfing%20at%20Bonaire`;
 const PHONE_NUMBER    = "+599 701 5483";
 const EMAIL           = "info@kiteboardingbonaire.com";
+const MAPS_URL        = "https://maps.google.com/?q=Atlantis+Beach+Kralendijk+Bonaire";
 
 const quickLinks = [
   { label: "Lessons",         href: "/lessons"  },
@@ -51,26 +52,12 @@ async function subscribeToBrevo(email: string): Promise<{ ok: boolean; message: 
   try {
     const res = await fetch("https://api.brevo.com/v3/contacts", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": BREVO_API_KEY,
-      },
-      body: JSON.stringify({
-        email,
-        listIds: [BREVO_LIST_ID],
-        updateEnabled: true,
-      }),
+      headers: { "Content-Type": "application/json", "api-key": BREVO_API_KEY },
+      body: JSON.stringify({ email, listIds: [BREVO_LIST_ID], updateEnabled: true }),
     });
-
-    if (res.status === 201 || res.status === 204) {
-      return { ok: true, message: "You're on the list!" };
-    }
-
+    if (res.status === 201 || res.status === 204) return { ok: true, message: "You're on the list!" };
     const data = await res.json().catch(() => ({}));
-    if ((data as any)?.code === "duplicate_parameter") {
-      return { ok: true, message: "You're already subscribed!" };
-    }
-
+    if ((data as any)?.code === "duplicate_parameter") return { ok: true, message: "You're already subscribed!" };
     return { ok: false, message: "Something went wrong. Try again." };
   } catch {
     return { ok: false, message: "Network error. Try again." };
@@ -95,13 +82,13 @@ export default function Footer() {
   return (
     <footer className="bg-primary text-primary-foreground">
 
-      {/* STINAPA Warning Bar */}
-      <div style={{ background: "linear-gradient(90deg, #4caf50, #f5c518, #e8643c)", color: "#1a1a1a" }} className="py-3">
+      {/* STINAPA Warning Bar — compact on mobile */}
+      <div style={{ background: "linear-gradient(90deg, #4caf50, #f5c518, #e8643c)", color: "#1a1a1a" }} className="py-2 md:py-3">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="font-body font-bold text-sm uppercase tracking-wider">
+          <p className="font-body font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-wide leading-snug">
             ⚠️ Mandatory STINAPA Nature Fee Required.{" "}
-            <a href="https://stinapa.bonairenaturefee.org/" target="_blank" rel="noopener noreferrer" className="underline decoration-2 underline-offset-4 hover:opacity-70 transition-opacity">
-              Purchase online at stinapa.bonairenaturefee.org
+            <a href="https://stinapa.bonairenaturefee.org/" target="_blank" rel="noopener noreferrer" className="underline decoration-2 underline-offset-2 hover:opacity-70 transition-opacity">
+              Purchase online
             </a>
           </p>
         </div>
@@ -121,14 +108,7 @@ export default function Footer() {
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`w-10 h-10 border-2 border-primary-foreground/30 flex items-center justify-center transition-all ${social.color} hover:border-current`}
-                  aria-label={social.label}
-                >
+                <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className={`w-10 h-10 border-2 border-primary-foreground/30 flex items-center justify-center transition-all ${social.color} hover:border-current`} aria-label={social.label}>
                   <social.Icon />
                 </a>
               ))}
@@ -181,13 +161,14 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <div className="flex items-start gap-3 text-primary-foreground/80">
+                {/* Location now links to Google Maps */}
+                <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-primary-foreground/80 hover:text-accent transition-colors">
                   <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <div>
                     <div className="font-body text-sm font-bold uppercase tracking-wide">Location</div>
                     <div className="font-body text-xs text-primary-foreground/70">Atlantis Beach, Kralendijk, Bonaire</div>
                   </div>
-                </div>
+                </a>
               </li>
             </ul>
           </div>
@@ -201,34 +182,15 @@ export default function Footer() {
               <p className="text-xs mt-1 text-primary-foreground/70">Wind permitting</p>
             </div>
             <h3 className="font-display font-black text-sm uppercase tracking-widest mb-4 text-primary-foreground">Stay Updated</h3>
-            <p className="text-primary-foreground/80 font-body text-sm mb-4">
-              Get news, trip updates and exclusive offers.
-            </p>
+            <p className="text-primary-foreground/80 font-body text-sm mb-4">Get news, trip updates and exclusive offers.</p>
             <form className="flex gap-2" onSubmit={handleNewsletter}>
               <label htmlFor="newsletter-email" className="sr-only">Your email</label>
-              <input
-                id="newsletter-email"
-                type="email"
-                required
-                placeholder="Your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={status === "loading" || status === "success"}
-                className="flex-1 px-4 py-2 bg-primary-foreground/10 border-2 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/60 font-body text-sm focus:outline-none focus:border-accent disabled:opacity-50"
-              />
-              <button
-                type="submit"
-                disabled={status === "loading" || status === "success"}
-                className="px-4 py-2 bg-accent hover:brightness-110 text-white font-display font-black text-sm uppercase border-2 border-accent transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-              >
+              <input id="newsletter-email" type="email" required placeholder="Your email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={status === "loading" || status === "success"} className="flex-1 px-4 py-2 bg-primary-foreground/10 border-2 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/60 font-body text-sm focus:outline-none focus:border-accent disabled:opacity-50" />
+              <button type="submit" disabled={status === "loading" || status === "success"} className="px-4 py-2 bg-accent hover:brightness-110 text-white font-display font-black text-sm uppercase border-2 border-accent transition-all disabled:opacity-60 disabled:cursor-not-allowed">
                 {status === "loading" ? "..." : "Go"}
               </button>
             </form>
-            {message && (
-              <p className={`mt-2 font-body text-xs ${status === "success" ? "text-[#4ade80]" : "text-red-400"}`}>
-                {message}
-              </p>
-            )}
+            {message && <p className={`mt-2 font-body text-xs ${status === "success" ? "text-[#4ade80]" : "text-red-400"}`}>{message}</p>}
           </div>
 
         </div>
@@ -238,16 +200,10 @@ export default function Footer() {
       <div className="border-t border-primary-foreground/15">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-5">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-primary-foreground/60 font-body text-xs">
-              {`© ${new Date().getFullYear()} Kiteboarding Bonaire. All rights reserved.`}
-            </p>
+            <p className="text-primary-foreground/60 font-body text-xs">{`© ${new Date().getFullYear()} Kiteboarding Bonaire. All rights reserved.`}</p>
             <div className="flex gap-6">
-              <Link href="/privacy" className="text-primary-foreground/60 hover:text-accent transition-colors font-body text-xs uppercase tracking-wide">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-primary-foreground/60 hover:text-accent transition-colors font-body text-xs uppercase tracking-wide">
-                Terms of Service
-              </Link>
+              <Link href="/privacy" className="text-primary-foreground/60 hover:text-accent transition-colors font-body text-xs uppercase tracking-wide">Privacy Policy</Link>
+              <Link href="/terms" className="text-primary-foreground/60 hover:text-accent transition-colors font-body text-xs uppercase tracking-wide">Terms of Service</Link>
             </div>
           </div>
         </div>
