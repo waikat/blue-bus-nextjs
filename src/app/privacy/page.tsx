@@ -14,8 +14,8 @@ const stagger = {
 };
 
 // ─── UPDATE THESE before going live ──────────────────────────────────────────
-const LEGAL_NAME    = "[LEGAL BUSINESS NAME]";        // e.g. Kiteboarding Bonaire B.V.
-const ADDRESS       = "[REGISTERED ADDRESS]";          // e.g. Kaya Atlantis 1, Kralendijk, Bonaire
+const LEGAL_NAME    = "COR Enterprise BV";
+const ADDRESS       = "EEG Boulevard, Kralendijk, Caribbean Netherlands";
 const CONTACT_EMAIL = "info@kiteboardingbonaire.com";
 const LAST_UPDATED  = "April 2026";
 // ─────────────────────────────────────────────────────────────────────────────

@@ -14,7 +14,7 @@ const stagger = {
 };
 
 // ─── UPDATE THESE before going live ──────────────────────────────────────────
-const LEGAL_NAME    = "[LEGAL BUSINESS NAME]";
+const LEGAL_NAME    = "COR Enterprise BV";
 const CONTACT_EMAIL = "info@kiteboardingbonaire.com";
 const LAST_UPDATED  = "April 2026";
 // ─────────────────────────────────────────────────────────────────────────────

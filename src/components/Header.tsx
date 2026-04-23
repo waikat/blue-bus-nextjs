@@ -8,14 +8,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import BookingModal from "./BookingModal";
 import WeatherModal from "./WeatherModal";
 import WindWidget from "./WindWidget";
+import LanguageSwitcher from "./LanguageSwitcher";
 import logo from "@/assets/Kiteboarding-bonaire-logo.gif";
-
-const navLinks = [
-  { label: "Lessons", href: "/lessons" },
-  { label: "Rentals", href: "/rentals" },
-  { label: "Trips",   href: "/trips"   },
-  { label: "About",   href: "/about"   },
-];
+import { getLocaleFromPathname, t } from "@/i18n/config";
 
 interface HeaderProps {
   onWeatherClick: () => void;
@@ -28,6 +23,17 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
   const [mobileOpen,  setMobileOpen]  = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
   const pathname = usePathname();
+  const locale = getLocaleFromPathname(pathname);
+  const tr = t(locale);
+
+  const navLinks = [
+    { label: tr.nav.lessons, href: locale === "en" ? "/lessons"  : "/nl/lessen"   },
+    { label: tr.nav.rentals, href: locale === "en" ? "/rentals"  : "/nl/verhuur"  },
+    { label: tr.nav.trips,   href: locale === "en" ? "/trips"    : "/nl/reizen"   },
+    { label: tr.nav.about,   href: locale === "en" ? "/about"    : "/nl/over-ons" },
+  ];
+
+  const homeHref = locale === "en" ? "/" : "/nl";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -37,7 +43,7 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
 
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 
-  const isHomePage = pathname === "/";
+  const isHomePage = pathname === "/" || pathname === "/nl";
 
   return (
     <>
@@ -51,9 +57,9 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
         >
           <div className="max-w-7xl mx-auto px-4 text-center">
             <p className="font-body font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-wide leading-snug">
-              ⚠️ Mandatory STINAPA Nature Fee Required.{" "}
+              {tr.stinapa.text}{" "}
               <a href="https://stinapa.bonairenaturefee.org/" target="_blank" rel="noopener noreferrer" className="underline decoration-2 underline-offset-2 hover:opacity-70 transition-opacity">
-                Purchase online
+                {tr.stinapa.link}
               </a>
             </p>
           </div>
@@ -64,7 +70,7 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
       <header className={`fixed left-0 right-0 z-40 bg-primary transition-all duration-300 ${isHomePage && !scrolled ? "top-7 md:top-8" : "top-0"}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between h-16 md:h-20 px-4 sm:px-6 lg:px-8">
 
-          <Link href="/" aria-label="Kiteboarding Bonaire Home">
+          <Link href={homeHref} aria-label="Kiteboarding Bonaire Home">
             <img src={logo.src} alt="Kiteboarding Bonaire" className="h-10 md:h-14 w-auto" />
           </Link>
 
@@ -77,15 +83,19 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
+            <LanguageSwitcher className="text-primary-foreground" />
             <div className="text-primary-foreground">
               <WindWidget onClick={onWeatherClick} />
             </div>
-            <button onClick={() => setBookingOpen(true)} className="btn-cyan text-sm py-2.5 px-6">Book Now</button>
+            <button onClick={() => setBookingOpen(true)} className="btn-cyan text-sm py-2.5 px-6">{tr.nav.bookNow}</button>
           </div>
 
-          <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)} aria-label={mobileOpen ? "Close menu" : "Open menu"}>
-            {mobileOpen ? <X className="w-6 h-6 text-primary-foreground" /> : <Menu className="w-6 h-6 text-primary-foreground" />}
-          </button>
+          <div className="md:hidden flex items-center gap-3">
+            <LanguageSwitcher className="text-primary-foreground" />
+            <button className="p-2" onClick={() => setMobileOpen(!mobileOpen)} aria-label={mobileOpen ? "Sluit menu" : "Open menu"}>
+              {mobileOpen ? <X className="w-6 h-6 text-primary-foreground" /> : <Menu className="w-6 h-6 text-primary-foreground" />}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -93,10 +103,10 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
       <AnimatePresence>
         {mobileOpen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-primary flex flex-col items-center justify-center gap-6">
-            <button className="absolute top-5 right-5 p-2" onClick={() => setMobileOpen(false)} aria-label="Close menu">
+            <button className="absolute top-5 right-5 p-2" onClick={() => setMobileOpen(false)} aria-label="Sluit menu">
               <X className="w-8 h-8 text-primary-foreground" />
             </button>
-            <Link href="/" className="mb-4" onClick={() => setMobileOpen(false)}>
+            <Link href={homeHref} className="mb-4" onClick={() => setMobileOpen(false)}>
               <img src={logo.src} alt="Kiteboarding Bonaire" className="h-14 w-auto" />
             </Link>
             {navLinks.map((link, i) => (
@@ -107,7 +117,7 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
               </motion.div>
             ))}
             <motion.button initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} onClick={() => { setMobileOpen(false); setBookingOpen(true); }} className="btn-cyan mt-6 text-lg w-3/4 max-w-xs">
-              Book Now
+              {tr.nav.bookNow}
             </motion.button>
           </motion.div>
         )}
