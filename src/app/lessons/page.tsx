@@ -1,331 +1,350 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Minus, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { Star } from "lucide-react";
 import BookingModal from "@/components/BookingModal";
-import lessonsHero           from "@/assets/lessons-hero.jpg";
-import ikoLogo               from "@/assets/iko-center.png";
-import lessonAction          from "@/assets/lesson-action.jpg";
-import photoInstructionWater from "@/assets/photo-instruction-water.jpg";
-import photoBoatSupport      from "@/assets/photo-boat-support.jpg";
-import photoGearUp           from "@/assets/photo-gear-up.jpg";
+import WeatherModal from "@/components/WeatherModal";
+import { useLiveWind } from "@/hooks/useLiveWind";
+import lessonsHero   from "@/assets/lessons-hero.jpg";
+import beachSetup    from "@/assets/beach-setup.jpg";
+import lessonAction  from "@/assets/lesson-action.jpg";
+import beachBriefing from "@/assets/photo-beach-briefing.jpg";
+import atlantisPhoto from "@/assets/bento-trips.jpg";
 
-const WHATSAPP_URL = "https://wa.me/5997015483?text=Hi!%20I'm%20interested%20in%20kite%20lessons%20at%20Bonaire";
-const NAVY_DEEP    = "hsl(211,100%,12%)";
+const GOOGLE_REVIEWS_URL     = "https://g.page/r/CSyJMvsyaLAJEBE/review";
+const BOOKING_ALL_LESSONS_ID = "g370000000b0000000c022b3d";
 
+const testimonials = [
+  { name: "Dominik Eggenschwiler", flag: "🇨🇭", country: "Switzerland",  quote: "Owner Rommel goes above and beyond, ensuring every guest feels cared for. With rescue boats always on hand, you can kite with confidence. You might even get the chance to kite alongside playful dolphins." },
+  { name: "Jenna Vreugdenhil",     flag: "🇳🇱", country: "Netherlands",  quote: "Absolutely loved taking classes here. I was lucky enough to have Rommel as my instructor and had such a great time with him. Aside from having genuine fun, my confidence grew thanks to his super helpful instructions." },
+  { name: "Elena Ribot",           flag: "🇪🇸", country: "Spain",         quote: "Within 5 lessons I could kite independently. I had little experience and was quite scared. The atmosphere is great, everyone helps each other and they have a dedicated rescue service. Thank you Kiteboarding Bonaire!" },
+  { name: "Ella",                  flag: "🌍",  country: "Local Guide",   quote: "I love coming down to this area and watching the boarders. There are often world-class ones here. The community seems very friendly. One of the instructors came over and we chatted and watched for a while. So much fun." },
+  { name: "Robert",                flag: "🇳🇱", country: "Nederland",     quote: "Prachtige locatie en hele vriendelijke mensen, mooi groot strand. Met alle geduld en aandacht werden de lessen gegeven. Absolute aanrader om hier je lessen te gaan nemen of lekker bezig te gaan op het water!" },
+];
+
+const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as const } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
-const fadeUp  = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const } } };
 
-const packages = [
-  { name: "Single Session", price: "$225", duration: "1 session · 2 hours", goal: "Custom to Your Level", goalUrl: "https://www.ikointl.com/courses", features: ["Tailored to your exact goals and pace", "Beginners: Safety & first water flights", "Riders: Refreshers or specific skills", "IKO certified instructor"], longDesc: "A completely flexible 2-hour session. Whether it is your very first day flying a kite, a quick refresher after a break, or you want to work on a specific new trick, we adapt the session exactly to your goals and pace.", featured: false, vikingId: "g37000000050000003f75f4dd" },
-  { name: "Block of 3", price: "$645", duration: "3 sessions · 2h each", goal: "IKO Level 2 — Intermediate", goalUrl: "https://www.ikointl.com/course/kiteboarder/intermediate", features: ["Full beginner progression path", "Body dragging and water relaunch", "First waterstart attempts", "First independent rides"], longDesc: "The ideal package to get you past the initial learning curve. By session two, you are doing water starts. By session three, you are taking your first real rides on the board.", featured: true, vikingId: "g37000000050000003f75f4dd", badge: "Most Popular" },
-  { name: "Block of 5", price: "$1,065", duration: "5 sessions · 2h each", goal: "Working toward IKO Level 3", goalUrl: "https://www.ikointl.com/course/kiteboarder/independent", features: ["Complete zero-to-hero journey", "Board starts and upwind riding", "Speed control and transitions", "Most students reach IKO Level 3"], longDesc: "The ultimate beginner path. We focus heavily on board skills, riding upwind, and becoming a self-sufficient kiteboarder so you can safely rent gear anywhere in the world.", featured: false, vikingId: "g37000000050000003f75f4dd" },
-];
-
-const duoPackages = [
-  { name: "Single Session", price: "$350", perPerson: "$175 pp", duration: "1 session · 2 hours", goal: "Custom to Your Levels", goalUrl: "#", features: ["Tailored to your exact goals and pace", "Beginners: Safety & first water flights", "Riders: Refreshers or specific skills", "IKO certified instructor"], longDesc: "A completely flexible 2-hour shared session. Perfect for two beginners wanting an introduction, or two riders wanting a refresher. You will share one kite, learning from each other's water time at your own pace.", featured: false, vikingId: "g3700000008000000e2ad9e2f" },
-  { name: "Block of 3", price: "$899", perPerson: "$450 pp", duration: "3 sessions · 2h each", goal: "Progress together", goalUrl: "#", features: ["Full beginner progression path", "Body dragging and water relaunch", "First waterstart attempts", "First independent rides"], longDesc: "Progress into water starts as a team. Sharing the kite gives you crucial rest time and allows you to learn from your partner's mistakes and successes.", featured: true, vikingId: "g3700000008000000e2ad9e2f", badge: "Best Value" },
-  { name: "Block of 5", price: "$1,499", perPerson: "$750 pp", duration: "5 sessions · 2h each", goal: "Ride independently", goalUrl: "#", features: ["Complete zero-to-hero journey", "Board starts and upwind riding", "Speed control and transitions", "Most students reach IKO Level 3"], longDesc: "A complete journey for two. By the end of this block, both riders should have the skills to ride independently, control speed, and potentially ride upwind.", featured: false, vikingId: "g3700000008000000e2ad9e2f" },
-];
-
-const included = [
-  "IKO certified instructor every session",
-  "All equipment — kite, board, harness, helmet, vest",
-  "Radio helmet communication with your instructor",
-  "Boat support on the water throughout",
-  "Full safety briefing before every session",
-  "IKO certification card upon completion",
-];
-
-const advancedServices = [
-  { label: "For riders who already ride", title: "Coaching Session",    desc: "2 hours of focused skill refinement. Technique work, progression drills, riding in different conditions.", price: "$185", priceNote: "per 2-hour session", cta: "Book Coaching →",      vikingId: "g370000000a00000069659785", dark: true,  tag: null },
-  { label: "Unique to Bonaire",           title: "Beach Support",       desc: "You ride independently, we handle the launch and land. Bring your own gear and skills.",                       price: "$90",  priceNote: "no instructor included", cta: "Book Beach Support →", vikingId: "g370000000a00000069659785", dark: false, tag: null },
-  { label: "IKO Riding Certification",   title: "Get Your IKO vCard",  desc: "Already riding but no official IKO card? We observe you on the water and certify you at the correct level (1–4). Level 3 is required to rent gear at most shops worldwide.", price: null, priceNote: null, cta: "Book Evaluation →", vikingId: "g370000000a00000069659785", dark: true, tag: "IKO Affiliated Center" },
-];
-
-const faqs = [
-  { q: "Do I need to know how to swim?",             a: "Yes. You should be comfortable in open water above your head." },
-  { q: "What if there's no wind on my lesson day?",  a: "We reschedule to the next windy day at no extra cost. Bonaire has 300+ wind days a year. This is rare, but when it happens we take care of it." },
-  { q: "How many sessions to ride independently?",   a: "IKO estimates around 14 hours on average from scratch, roughly 7 of our 2-hour sessions. Some go faster, some slower. Every session builds real, measurable skills.", link: { label: "See IKO progression levels ↗", href: "https://www.ikointl.com/courses", external: true } },
-  { q: "What is the minimum age?",                   a: "Around 10 years old. All younger students must swim confidently in open water. Get in touch if you're not sure." },
-  { q: "What's included in the price?",              a: "Everything — kite, board, harness, helmet, vest, IKO certified instructor, radio helmet, boat support and safety briefing. The only extra is the mandatory STINAPA park tag, purchased separately." },
-  { q: "What's the cancellation policy?",            a: "Free cancellation up to 48 hours before your lesson.", link: { label: "View full cancellation policy ↗", href: "/info", external: false } },
-  { q: "What is an IKO Riding Level Evaluation?",    a: "If you already know how to kite but don't have an official IKO card, we can evaluate your riding and certify you at the appropriate level (Level 1–4). Most rental shops worldwide require Level 3. Get in touch to arrange an evaluation session." },
-];
-
-const photoStrip = [
-  { src: photoInstructionWater.src, alt: "Instructor guiding student in the water",    pos: "object-center" },
-  { src: photoBoatSupport.src,      alt: "KBB boat support on the water",              pos: "object-center" },
-  { src: photoGearUp.src,           alt: "Instructor fitting student harness on beach", pos: "object-center" },
-];
-
-function FaqItem({ q, a, link }: { q: string; a: string; link?: { label: string; href: string; external: boolean } }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="cursor-pointer group" style={{ borderBottom: "1px solid rgba(0,0,0,0.1)" }} onClick={() => setOpen(!open)}>
-      <div className="flex items-center justify-between py-6 gap-6">
-        <h3 className={`font-display font-black text-base md:text-lg uppercase tracking-tighter transition-colors ${open ? "text-accent" : "text-foreground group-hover:text-accent"}`}>{q}</h3>
-        <div className={`w-10 h-10 border-2 flex items-center justify-center flex-shrink-0 transition-colors ${open ? "border-accent bg-accent" : "border-foreground/20 group-hover:border-accent"}`}>
-          {open ? <Minus className="w-5 h-5 text-white" /> : <Plus className="w-5 h-5 text-foreground group-hover:text-accent" />}
-        </div>
-      </div>
-      {open && (
-        <div className="pb-6 pr-14">
-          <p className="text-muted-foreground font-body text-base leading-relaxed">
-            {a}
-            {link && <a href={link.href} target={link.external ? "_blank" : undefined} rel={link.external ? "noopener noreferrer" : undefined} className="text-accent underline ml-1 hover:text-accent/70" onClick={(e) => e.stopPropagation()}>{link.label}</a>}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function LessonCard({ pkg, onBook }: { pkg: any; onBook: () => void }) {
-  const [expanded, setExpanded] = useState(false);
-  return (
-    <div className={`relative flex flex-col w-full h-full p-8 md:p-10 transition-all duration-300 md:border-y-2 md:first:border-l-2 md:last:border-r-2 md:border-x-0 border-2 border-foreground ${pkg.featured ? "md:scale-105 md:z-10 md:border-2" : "md:z-0"}`} style={{ background: pkg.featured ? NAVY_DEEP : "white" }}>
-      {pkg.badge && (
-        <div className="absolute -top-px left-0 right-0 flex justify-center">
-          <span className="bg-accent text-white font-display font-black text-xs uppercase tracking-widest px-4 py-1.5 whitespace-nowrap">{pkg.badge}</span>
-        </div>
-      )}
-      <div className={`flex-1 flex flex-col ${pkg.badge ? "pt-6" : ""}`}>
-        <div className="mb-6">
-          <h3 className={`text-2xl font-display font-black uppercase tracking-tighter mb-1 ${pkg.featured ? "text-white" : "text-foreground"}`}>{pkg.name}</h3>
-          <p className={`text-sm font-body ${pkg.featured ? "text-white/70" : "text-muted-foreground"}`}>{pkg.duration}</p>
-        </div>
-        <div className="mb-1">
-          <span className={`font-display font-black leading-none ${pkg.featured ? "text-white" : "text-foreground"}`} style={{ fontSize: "clamp(48px, 5vw, 64px)" }}>{pkg.price}</span>
-        </div>
-        <div className="min-h-[24px] mb-6">
-          {pkg.perPerson ? (
-            <p className="text-accent font-display font-bold text-sm">{pkg.perPerson}</p>
-          ) : (
-            <a href={pkg.goalUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-display font-black uppercase tracking-widest text-accent hover:text-accent/70 transition-colors">{pkg.goal} ↗</a>
-          )}
-        </div>
-        <ul className="space-y-3 mb-6">
-          {pkg.features.map((f: string, j: number) => (
-            <li key={j} className={`flex items-start gap-3 text-sm font-body ${pkg.featured ? "text-white/70" : "text-foreground/80"}`}>
-              <span className="text-accent mt-0.5 flex-shrink-0 font-black">—</span>{f}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-auto flex flex-col justify-end pt-4">
-        {pkg.longDesc && (
-          <div className="mb-5">
-            <button onClick={() => setExpanded(!expanded)} className={`text-[10px] sm:text-xs font-display font-bold uppercase tracking-widest flex items-center gap-1.5 transition-colors ${pkg.featured ? "text-white/70 hover:text-white" : "text-foreground/50 hover:text-foreground"}`}>
-              {expanded ? "Hide Details" : "Read full details"}
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${expanded ? "rotate-180" : ""}`} />
-            </button>
-            <AnimatePresence>
-              {expanded && (
-                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                  <p className={`mt-4 text-sm font-body leading-relaxed border-l-2 border-accent pl-3 ${pkg.featured ? "text-white/80" : "text-foreground/80"}`}>{pkg.longDesc}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
-        <button onClick={onBook} className={`w-full inline-block text-center font-display font-black py-4 uppercase tracking-widest transition-all text-sm border-2 ${pkg.featured ? "bg-accent text-white border-accent hover:brightness-110" : "bg-foreground text-background border-foreground hover:bg-foreground/80"}`}>
-          Book Now →
-        </button>
-      </div>
-    </div>
-  );
-}
-
-export default function LessonsPage() {
-  const [lessonType, setLessonType] = useState<"solo" | "duo">("solo");
-  const [bookingId,  setBookingId]  = useState<string | null>(null);
-  const [activeCard, setActiveCard] = useState(1); // start on featured
-  const activePackages = lessonType === "solo" ? packages : duoPackages;
-
-  function openBooking(id: string) { setBookingId(id); }
+export default function HomePage() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const [weatherOpen, setWeatherOpen] = useState(false);
+  const wind = useLiveWind();
 
   return (
-    <>
-      {/* ── HERO ─────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[65vh] md:min-h-[75vh] overflow-hidden flex items-center justify-center text-center">
-        <img src={lessonsHero.src} alt="Learn to kitesurf in Bonaire with KBB" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#051228E0] via-[#05122859] to-[#05122833]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#051228EB] to-transparent h-[55%] mt-auto" />
-        <div className="relative z-10 px-6 sm:px-10 max-w-4xl mx-auto w-full text-center">
+    <div style={{ background: "#F8F6F1" }}>
+
+      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden min-h-[100vh] flex items-end">
+        <video autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          src="/videos/hero_hyperlapse3.mp4" />
+        <div className="absolute inset-0" style={{
+          background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0.6) 60%, rgba(0,0,0,0.88) 80%, rgba(0,0,0,0.92) 100%)"
+        }} />
+        <div className="relative z-10 w-full px-8 sm:px-14 lg:px-20 pb-10 md:pb-14">
           <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.p variants={fadeUp} className="category-label mb-8 block text-accent">IKO Certified School</motion.p>
-            <motion.h1 variants={fadeUp} className="font-display font-black text-white uppercase tracking-tighter mb-6 text-[clamp(56px,10vw,140px)] leading-[0.87]">Learn to<br />Kitesurf</motion.h1>
-            <motion.p variants={fadeUp} className="text-white/70 font-body text-sm md:text-base uppercase tracking-[0.22em] mb-12 mx-auto max-w-[400px]">Certified instructors. Radio helmets. Your pace.</motion.p>
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-4 justify-center">
-              <a href="#packages" className="btn-cyan text-base w-full sm:w-auto">View Packages</a>
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base w-full sm:w-auto">Ask Us Anything</a>
+            <motion.h1
+              variants={fadeUp}
+              className="font-display font-black text-white uppercase"
+              style={{ fontSize: "clamp(80px,14.5vw,200px)", lineHeight: 0.86, letterSpacing: "-0.02em", marginBottom: "0.25em" }}
+            >
+              THE<br />BLUE BUS
+            </motion.h1>
+            <motion.p variants={fadeUp}
+              className="font-body text-white uppercase tracking-[0.25em] mb-8 text-sm"
+              style={{ color: "rgba(255,255,255,0.78)" }}>
+              Est. 2001 — Bonaire, Caribbean Netherlands
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
+              {/* 0px radius — no rounding anywhere */}
+              <button
+                onClick={() => setBookingOpen(true)}
+                className="font-display font-black text-sm uppercase tracking-widest px-10 py-4 text-white transition-all duration-200 hover:brightness-110"
+                style={{ background: "hsl(186,100%,42%)", borderRadius: 0 }}
+              >
+                Book a Lesson
+              </button>
+              <Link
+                href="/about"
+                className="font-display font-black text-sm uppercase tracking-widest px-10 py-4 text-white transition-all duration-200 hover:bg-white/15"
+                style={{ border: "2px solid rgba(255,255,255,0.70)", borderRadius: 0 }}
+              >
+                Our Story
+              </Link>
             </motion.div>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-accent" />
       </section>
 
-      {/* ── INCLUDED ─────────────────────────────────────────────────── */}
-      <section style={{ background: NAVY_DEEP }} className="py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.p variants={fadeUp} className="category-label mb-4 block text-accent">Every lesson includes</motion.p>
-            <motion.h2 variants={fadeUp} className="font-display font-black text-white uppercase tracking-tighter mb-12 text-[clamp(36px,7vw,88px)] leading-[0.87]">No hidden extras.<br />Everything covered.</motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 border border-white/15">
-              {included.map((item, i) => (
-                <div key={i} className="flex items-start gap-4 py-5 px-6" style={{ borderBottom: i < included.length - 2 ? "1px solid rgba(255,255,255,0.12)" : i < included.length - 1 ? "1px solid rgba(255,255,255,0.12)" : undefined, borderRight: i % 2 === 0 ? "1px solid rgba(255,255,255,0.12)" : undefined }}>
-                  <div className="w-[3px] bg-accent flex-shrink-0 self-stretch min-h-[20px]" />
-                  <p className="text-white/80 font-body text-base leading-relaxed">{item}</p>
-                </div>
-              ))}
+      {/* ── INTRO ────────────────────────────────────────────────────────────── */}
+      <section style={{ background: "#F8F6F1" }} className="py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+            className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-0 items-start">
+
+            <div className="md:col-span-7">
+              <motion.p variants={fadeUp} className="category-label mb-4">
+                Bonaire&apos;s original kite school
+              </motion.p>
+              <motion.h2 variants={fadeUp}
+                className="font-display font-black text-foreground uppercase tracking-tighter"
+                style={{ fontSize: "clamp(42px,6.5vw,92px)", lineHeight: 0.91 }}>
+                Learn to fly.<br />Find the wind.<br />Keep coming back.
+              </motion.h2>
             </div>
-            <div className="border border-t-0 border-white/10 h-[clamp(180px,25vw,300px)] overflow-hidden">
-              <img src={lessonAction.src} className="w-full h-full object-cover object-bottom" alt="Kitesurfing lesson in action in Bonaire" />
-            </div>
-            <div className="pt-6 border-t border-white/12">
-              <p className="text-white/70 font-body text-sm">The only extra is the mandatory{" "}<a href="https://stinapa.bonairenaturefee.org/" target="_blank" rel="noopener noreferrer" className="text-accent underline hover:text-accent/70">STINAPA Bonaire National Park tag</a>, purchased separately before your session.</p>
+
+            <div className="md:col-span-5 md:pl-14 md:pt-24">
+              <motion.p variants={fadeUp}
+                className="font-body text-base md:text-lg leading-relaxed mb-10"
+                style={{ color: "rgba(0,0,0,0.78)" }}>
+                Since 2001, we have been on the same beach with the same mission. Get people on the water safely, confidently, and with a smile that sticks around for the rest of their life.
+              </motion.p>
+              {/* Stats — no divider line */}
+              <motion.div variants={fadeUp} className="grid grid-cols-3 gap-4 pt-8">
+                {[
+                  { val: "300+", label: "Wind days\nper year" },
+                  { val: "IKO",  label: "Certified\ncenter" },
+                  { val: "5.0",  label: "Google\nreviews" },
+                ].map((s) => (
+                  <div key={s.val}>
+                    <p className="font-display font-black text-foreground text-4xl leading-none mb-1.5">{s.val}</p>
+                    <p className="font-body text-[11px] uppercase tracking-wide"
+                      style={{ color: "rgba(0,0,0,0.60)", whiteSpace: "pre-line" }}>{s.label}</p>
+                  </div>
+                ))}
+              </motion.div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ── PACKAGES ─────────────────────────────────────────────────── */}
-      <motion.section id="packages" initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="py-20 md:py-28 bg-background">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <motion.div variants={fadeUp} className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
-            <div>
-              <p className="category-label mb-4 block">Flexible sessions & complete beginner paths. Max 2 students per instructor.</p>
-              <h2 className="font-display font-black text-foreground uppercase tracking-tighter text-[clamp(36px,6vw,72px)] leading-[0.87]">Choose Your Package</h2>
-            </div>
-            <div className="flex items-center gap-4 flex-shrink-0 pb-2">
-              <img src={ikoLogo.src} alt="IKO Kite Center Certified" className="h-10 w-auto opacity-80" />
-              <a href="https://www.ikointl.com/" target="_blank" rel="noopener noreferrer" className="text-accent font-body text-xs underline hover:text-accent/70 whitespace-nowrap">What is IKO? ↗</a>
-            </div>
+      {/* ── LESSONS SPLIT ────────────────────────────────────────────────────── */}
+      <section className="flex flex-col md:flex-row" style={{ minHeight: "580px" }}>
+        <div className="relative w-full md:w-1/2 overflow-hidden" style={{ minHeight: "380px" }}>
+          <img src={lessonsHero.src} alt="Kitesurf lesson at Atlantis Beach Bonaire"
+            className="absolute inset-0 w-full h-full object-cover" />
+        </div>
+        <div className="w-full md:w-1/2 flex flex-col justify-center px-10 md:px-16 py-16 md:py-20"
+          style={{ background: "hsl(211,100%,14%)" }}>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.p variants={fadeUp} className="category-label mb-5" style={{ color: "hsl(186,100%,42%)" }}>
+              IKO Certified · Since 2001
+            </motion.p>
+            <motion.h2 variants={fadeUp}
+              className="font-display font-black text-white uppercase tracking-tighter mb-6"
+              style={{ fontSize: "clamp(34px,4.5vw,62px)", lineHeight: 0.91 }}>
+              Learn to kite<br />on Bonaire&apos;s<br />perfect flat water.
+            </motion.h2>
+            <motion.p variants={fadeUp}
+              className="font-body leading-relaxed mb-10"
+              style={{ fontSize: 16, color: "rgba(255,255,255,0.78)" }}>
+              Radio helmets. Boat support. IKO certified instructors. Max 2 students per instructor.
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex flex-wrap gap-3">
+              <Link href="/lessons"
+                className="font-display font-black text-sm uppercase tracking-widest px-10 py-4 text-white transition-all hover:brightness-110"
+                style={{ background: "hsl(186,100%,42%)", borderRadius: 0 }}>
+                View Lessons
+              </Link>
+              <button onClick={() => setBookingOpen(true)}
+                className="font-display font-black text-sm uppercase tracking-widest px-10 py-4 text-white transition-all hover:bg-white/10"
+                style={{ border: "2px solid rgba(255,255,255,0.50)", borderRadius: 0 }}>
+                Book Now
+              </button>
+            </motion.div>
           </motion.div>
+        </div>
+      </section>
 
-          <motion.div variants={fadeUp} className="flex justify-center mb-10">
-            <div className="inline-flex border-2 border-foreground bg-background p-0.5">
-              <button onClick={() => { setLessonType("solo"); setActiveCard(1); }} className={`px-5 py-3 sm:px-7 sm:py-3 text-[10px] sm:text-xs font-display font-black uppercase tracking-widest transition-all duration-300 ${lessonType === "solo" ? "bg-foreground text-background" : "text-foreground/50 hover:bg-foreground/5 hover:text-foreground"}`}>Solo Lessons (1-on-1)</button>
-              <button onClick={() => { setLessonType("duo"); setActiveCard(1); }} className={`px-5 py-3 sm:px-7 sm:py-3 text-[10px] sm:text-xs font-display font-black uppercase tracking-widest transition-all duration-300 ${lessonType === "duo" ? "bg-foreground text-background" : "text-foreground/50 hover:bg-foreground/5 hover:text-foreground"}`}>Duo Lessons (2-on-1)</button>
-            </div>
-          </motion.div>
-
-          {/* Desktop cards */}
-          <div className="hidden md:flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-3 gap-6 md:gap-0 pb-10 md:pb-16 hide-scrollbar items-stretch">
-            {activePackages.map((pkg, i) => (
-              <div key={i} className="flex w-full flex-shrink-0 snap-center h-full">
-                <LessonCard pkg={pkg} onBook={() => openBooking(pkg.vikingId)} />
-              </div>
+      {/* ── PHOTO TRIO + RENTALS ─────────────────────────────────────────────── */}
+      <section style={{ background: "#F8F6F1" }} className="py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
+          <div className="grid grid-cols-3 gap-5 items-end">
+            {[
+              { src: beachSetup.src,    alt: "Gear setup at Atlantis Beach",        offset: false },
+              { src: lessonAction.src,  alt: "Kite lesson in action on the water",   offset: true  },
+              { src: beachBriefing.src, alt: "Pre-lesson beach briefing with instructor", offset: false },
+            ].map((p, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.6 }}
+                /* no rounded corners — photos are raw */
+                className={`relative overflow-hidden ${p.offset ? "mt-10 md:mt-16" : ""}`}
+                style={{ aspectRatio: "3/4" }}>
+                <img src={p.src} alt={p.alt}
+                  className="absolute inset-0 w-full h-full object-cover" />
+              </motion.div>
             ))}
           </div>
 
-          {/* Mobile cards with arrows + dots */}
-          <div className="md:hidden pb-6">
-            <div className="relative">
-              <AnimatePresence mode="wait">
-                <motion.div key={`${lessonType}-${activeCard}`} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }} className="px-1 pt-8">
-                  <LessonCard pkg={activePackages[activeCard]} onBook={() => openBooking(activePackages[activeCard].vikingId)} />
-                </motion.div>
-              </AnimatePresence>
-              {/* Prev / Next arrows */}
-              <button onClick={() => setActiveCard((c) => (c - 1 + activePackages.length) % activePackages.length)} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-8 h-8 bg-foreground text-background flex items-center justify-center z-10" aria-label="Previous package">
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button onClick={() => setActiveCard((c) => (c + 1) % activePackages.length)} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-8 h-8 bg-foreground text-background flex items-center justify-center z-10" aria-label="Next package">
-                <ChevronRight className="w-4 h-4" />
-              </button>
+          {/* Rentals strip — no divider line */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mt-14 pb-0">
+            <div>
+              <p className="category-label mb-2">Also available</p>
+              <h3 className="font-display font-black text-foreground uppercase tracking-tighter"
+                style={{ fontSize: "clamp(28px,4vw,52px)" }}>
+                Premium gear rentals
+              </h3>
             </div>
-            {/* Dot indicators */}
-            <div className="flex justify-center gap-2 mt-5">
-              {activePackages.map((_, i) => (
-                <button key={i} onClick={() => setActiveCard(i)} className={`transition-all duration-300 ${i === activeCard ? "w-6 h-2 bg-accent" : "w-2 h-2 bg-foreground/30"}`} aria-label={`Package ${i + 1}`} />
-              ))}
-            </div>
-            <p className="text-center text-foreground/50 font-body text-xs mt-3 uppercase tracking-widest">{activeCard + 1} of {activePackages.length}</p>
+            {/* No rounded-full — matches DNA */}
+            <Link href="/rentals"
+              className="inline-block font-display font-black text-sm uppercase tracking-widest px-8 py-3.5 border-2 border-foreground text-foreground transition-all duration-200 hover:bg-foreground hover:text-background flex-shrink-0"
+              style={{ borderRadius: 0 }}>
+              Rent Equipment
+            </Link>
           </div>
-
-          <motion.p variants={fadeUp} className="text-xs text-muted-foreground font-body mt-2 text-center max-w-2xl mx-auto">
-            IKO estimates 14 hours on average to reach independent rider level from scratch.{" "}
-            <a href="https://www.ikointl.com/courses" target="_blank" rel="noopener noreferrer" className="text-accent underline hover:text-accent/70">Learn more about IKO levels ↗</a>
-          </motion.p>
         </div>
-      </motion.section>
+      </section>
 
-      {/* ── ALREADY RIDING ───────────────────────────────────────────── */}
-      <section style={{ background: NAVY_DEEP }}>
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-20 md:py-28">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-0">
-            <motion.div variants={fadeUp} className="md:pr-12 mb-12 md:mb-0 md:sticky md:top-28 md:self-start">
-              <p className="category-label mb-4 text-accent">Already riding?</p>
-              <h2 className="font-display font-black text-white uppercase tracking-tighter text-[clamp(24px,3vw,40px)] leading-[0.9]">Options for riders past the beginner stage</h2>
-            </motion.div>
-            <div className="md:col-span-2 col-divider-dark">
-              {advancedServices.map((service, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }} className="p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6" style={{ background: service.dark ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.08)", borderBottom: i < advancedServices.length - 1 ? "1px solid rgba(255,255,255,0.1)" : undefined, borderTop: i === 0 ? "1px solid rgba(255,255,255,0.1)" : undefined }}>
-                  <div className="flex-1">
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <p className="category-label text-accent">{service.label}</p>
-                      {service.tag && <span className="border border-accent/40 text-accent font-display font-black text-[10px] uppercase tracking-widest px-2 py-0.5">{service.tag}</span>}
-                    </div>
-                    <h3 className="font-display font-black text-white uppercase tracking-tighter mb-2 text-[clamp(20px,2.5vw,30px)] leading-[0.92]">{service.title}</h3>
-                    <p className="text-white/60 font-body text-sm leading-relaxed">{service.desc}</p>
-                  </div>
-                  <div className="flex flex-col items-start md:items-end gap-3 flex-shrink-0">
-                    {service.price && (
-                      <div className="text-right">
-                        <span className="font-display font-black text-white leading-none text-[clamp(28px,3vw,40px)]">{service.price}</span>
-                        <span className="text-white/70 font-body text-xs ml-2">{service.priceNote}</span>
-                      </div>
-                    )}
-                    <button onClick={() => openBooking(service.vikingId)} className="inline-block font-display font-black py-3 px-6 uppercase tracking-widest text-xs border-2 transition-all whitespace-nowrap bg-accent text-white border-accent hover:brightness-110">{service.cta}</button>
-                  </div>
-                </motion.div>
-              ))}
+      {/* ── ATLANTIS BEACH ───────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden" style={{ background: "hsl(211,100%,14%)" }}>
+        <img src={atlantisPhoto.src} alt="Atlantis Beach Bonaire kite spot"
+          className="absolute inset-0 w-full h-full object-cover opacity-25" />
+        <div className="relative z-10 max-w-7xl mx-auto px-8 sm:px-14 lg:px-20 py-20 md:py-28">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}
+            className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center">
+            <div>
+              <motion.p variants={fadeUp} className="category-label mb-5">Where we ride</motion.p>
+              <motion.h2 variants={fadeUp}
+                className="font-display font-black text-white uppercase tracking-tighter"
+                style={{ fontSize: "clamp(40px,5.5vw,76px)", lineHeight: 0.91 }}>
+                Atlantis Beach.<br />Best flat water<br />on the planet.
+              </motion.h2>
+            </div>
+            <div>
+              <motion.p variants={fadeUp}
+                className="font-body text-base md:text-lg leading-relaxed mb-8"
+                style={{ color: "rgba(255,255,255,0.78)" }}>
+                Consistent trade winds, warm flat water, an offshore reef keeping the chop down. We have called this beach home for over 20 years and we never plan to leave.
+              </motion.p>
+              <motion.div variants={fadeUp}>
+                {/* No rounded-full */}
+                <button onClick={() => setWeatherOpen(true)}
+                  className="inline-block font-display font-black text-sm uppercase tracking-widest px-8 py-3.5 border text-white transition-all duration-200 hover:bg-white/10"
+                  style={{ borderColor: "rgba(255,255,255,0.40)", borderRadius: 0 }}>
+                  Live Wind Forecast
+                </button>
+              </motion.div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ── PHOTO STRIP ──────────────────────────────────────────────── */}
-      <div className="flex overflow-x-auto hide-scrollbar md:grid md:grid-cols-3 gap-0">
-        {photoStrip.map((photo, i) => (
-          <div key={i} className="flex-shrink-0 w-[85vw] md:w-auto h-[380px] md:h-[480px] overflow-hidden">
-            <img src={photo.src} alt={photo.alt} className={`w-full h-full object-cover ${photo.pos} transition-transform duration-700 hover:scale-105`} />
-          </div>
-        ))}
-      </div>
-
-      {/* ── FAQ ──────────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 bg-background">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.p variants={fadeUp} className="category-label mb-4 block text-center">Good to know</motion.p>
-            <motion.h2 variants={fadeUp} className="font-display font-black text-foreground uppercase tracking-tighter mb-16 text-center text-[clamp(32px,5vw,60px)] leading-[0.87]">Common Questions</motion.h2>
-            <div className="max-w-3xl mx-auto border-t border-black/10">
-              {faqs.map((faq, i) => <FaqItem key={i} q={faq.q} a={faq.a} link={(faq as any).link} />)}
+      {/* ── TESTIMONIALS ─────────────────────────────────────────────────────── */}
+      <section style={{ background: "#F8F6F1" }} className="py-20 md:py-28 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="px-8 sm:px-14 lg:px-20 mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+            <div>
+              <p className="category-label mb-3">Real reviews from Google</p>
+              <h2 className="font-display font-black text-foreground uppercase tracking-tighter"
+                style={{ fontSize: "clamp(34px,5vw,64px)", lineHeight: 0.91 }}>
+                Stories from<br />the water
+              </h2>
             </div>
-            <p className="text-sm text-muted-foreground font-body mt-12 max-w-3xl mx-auto text-center">
-              More questions?{" "}<a href="/info" className="text-accent underline hover:text-accent/70">Full FAQ</a>{" "}or{" "}<a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="text-accent underline hover:text-accent/70">WhatsApp us directly</a>.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+            {/* No rounded-full */}
+            <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 font-display font-black text-xs uppercase tracking-widest px-6 py-3 border text-foreground hover:border-foreground transition-all self-start sm:self-auto flex-shrink-0"
+              style={{ borderColor: "rgba(0,0,0,0.25)", borderRadius: 0 }}>
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, j) => <Star key={j} className="w-3 h-3 text-accent fill-current" />)}
+              </div>
+              5.0 on Google
+            </a>
+          </div>
 
-      {/* ── CTA ──────────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 bg-primary text-center">
-        <div className="max-w-3xl mx-auto px-6">
-          <h2 className="font-display font-black text-white uppercase tracking-tighter mb-4 text-[clamp(40px,7vw,96px)] leading-[0.88]" style={{ letterSpacing: "-0.01em" }}>Ready to Start?</h2>
-          <p className="text-white/70 font-body mb-10 uppercase tracking-[0.2em] text-sm">Find us at Atlantis Beach. We'll take care of everything else.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-            <a href="#packages" className="btn-cyan text-base w-full sm:w-auto">View Packages</a>
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base w-full sm:w-auto">WhatsApp Us</a>
+          <div className="flex gap-5 overflow-x-auto px-8 sm:px-14 lg:px-20 pb-4 hide-scrollbar snap-x snap-mandatory">
+            {testimonials.map((t, i) => (
+              /* No rounded-2xl — sharp cards match DNA */
+              <div key={i}
+                className="snap-start flex-shrink-0 w-[300px] md:w-[340px] flex flex-col justify-between p-7"
+                style={{ background: "#fff", boxShadow: "0 1px 16px rgba(0,0,0,0.06)", borderRadius: 0 }}>
+                <div>
+                  <div className="flex gap-0.5 mb-5">
+                    {[...Array(5)].map((_, s) => <Star key={s} className="w-3.5 h-3.5 text-accent fill-current" />)}
+                  </div>
+                  <p className="font-body text-sm leading-relaxed italic mb-5"
+                    style={{ color: "rgba(0,0,0,0.78)" }}>
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                </div>
+                {/* No inner borderTop line */}
+                <div className="flex items-center gap-3 pt-4">
+                  <div className="w-8 h-8 rounded-full bg-foreground flex items-center justify-center font-display font-black text-background text-xs flex-shrink-0">
+                    {t.name[0]}
+                  </div>
+                  <div>
+                    <p className="font-display font-black text-xs text-foreground uppercase tracking-tight">{t.name}</p>
+                    <p className="font-body text-xs" style={{ color: "rgba(0,0,0,0.60)" }}>
+                      {t.flag} {t.country}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {/* Leave a review — no rounded corners */}
+            <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer"
+              className="snap-start flex-shrink-0 w-[180px] flex flex-col items-center justify-center gap-3 p-7 border border-dashed hover:border-accent hover:bg-accent/5 transition-all group"
+              style={{ borderColor: "rgba(0,0,0,0.18)", borderRadius: 0 }}>
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, s) => (
+                  <Star key={s} className="w-4 h-4 fill-current text-foreground/20 group-hover:text-accent transition-colors" />
+                ))}
+              </div>
+              <p className="font-display font-black text-[11px] uppercase tracking-widest text-center transition-colors"
+                style={{ color: "rgba(0,0,0,0.60)" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "rgba(0,0,0,0.85)")}
+                onMouseLeave={e => (e.currentTarget.style.color = "rgba(0,0,0,0.60)")}>
+                Leave a review
+              </p>
+            </a>
           </div>
         </div>
       </section>
 
-      <BookingModal open={!!bookingId} onOpenChange={(v) => { if (!v) setBookingId(null); }} productId={bookingId ?? undefined} />
-    </>
+      {/* ── FINAL CTA ────────────────────────────────────────────────────────── */}
+      <section style={{ background: "hsl(211,100%,16%)" }} className="pt-20 md:pt-24 pb-0 relative">
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20 pb-20 md:pb-28">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10">
+            <div>
+              <p className="category-label mb-4">Ready to ride?</p>
+              <h2 className="font-display font-black text-white uppercase tracking-tighter"
+                style={{ fontSize: "clamp(38px,6vw,84px)", lineHeight: 0.91 }}>
+                Book your<br />lesson today.
+              </h2>
+            </div>
+            <div className="flex flex-col sm:flex-row md:flex-col gap-3 flex-shrink-0">
+              {/* No rounded corners */}
+              <button onClick={() => setBookingOpen(true)}
+                className="font-display font-black text-sm uppercase tracking-widest px-10 py-4 text-white transition-all duration-200 hover:brightness-110 whitespace-nowrap"
+                style={{ background: "hsl(186,100%,42%)", borderRadius: 0 }}>
+                Book a Lesson
+              </button>
+              <Link href="/rentals"
+                className="font-display font-black text-sm uppercase tracking-widest px-10 py-4 text-white transition-all duration-200 hover:bg-white/10 whitespace-nowrap text-center"
+                style={{ border: "2px solid rgba(255,255,255,0.45)", borderRadius: 0 }}>
+                Rent Equipment
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Wave — decorative, not a divider line */}
+        <div className="w-full overflow-hidden" style={{ marginBottom: "-3px" }}>
+          <svg viewBox="0 0 1440 72" xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+            style={{ display: "block", width: "100%", height: "72px" }}>
+            <path d="M0,36 C240,72 480,0 720,36 C960,72 1200,0 1440,36 L1440,72 L0,72 Z"
+              fill="hsl(211,100%,12%)" />
+          </svg>
+        </div>
+      </section>
+
+      <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} productId={BOOKING_ALL_LESSONS_ID} />
+      <WeatherModal open={weatherOpen} onOpenChange={setWeatherOpen} />
+    </div>
   );
 }

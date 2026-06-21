@@ -1,214 +1,216 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { MessageCircle, Phone, Mail, MapPin } from "lucide-react";
-import logo from "@/assets/Kiteboarding-bonaire-logo.gif";
+import { MessageCircle, Mail, MapPin } from "lucide-react";
+import { WindCard } from "@/components/WindCard";
 
-const BREVO_API_KEY = "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";
-const BREVO_LIST_ID = 2;
-
-const WHATSAPP_NUMBER = "+5997015483";
-const WHATSAPP_URL    = `https://wa.me/5997015483?text=Hi!%20I'm%20interested%20in%20kitesurfing%20at%20Bonaire`;
-const PHONE_NUMBER    = "+599 701 5483";
-const EMAIL           = "info@kiteboardingbonaire.com";
-const MAPS_URL        = "https://maps.google.com/?q=Atlantis+Beach+Kralendijk+Bonaire";
-
-const quickLinks = [
-  { label: "Lessons",         href: "/lessons"  },
-  { label: "Rentals",         href: "/rentals"  },
-  { label: "Trips & Safaris", href: "/trips"    },
-  { label: "Live Forecast",   href: "/forecast" },
-  { label: "About Us",        href: "/about"    },
-  { label: "FAQ & Policies",  href: "/info"     },
-];
-
-function IconInstagram() {
+function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-      <circle cx="12" cy="12" r="4"/>
-      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}
+      strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect x="2" y="2" width="20" height="20" rx="5" />
+      <path d="M16 11.4A4 4 0 1 1 12.6 8 4 4 0 0 1 16 11.4z" />
+      <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
     </svg>
   );
 }
 
-function IconYoutube() {
+function YoutubeIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
-      <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}
+      strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M22.5 6.4a2.8 2.8 0 0 0-2-2C18.8 4 12 4 12 4s-6.8 0-8.5.4a2.8 2.8 0 0 0-2 2A29 29 0 0 0 1 12a29 29 0 0 0 .5 5.6 2.8 2.8 0 0 0 2 2C5.2 20 12 20 12 20s6.8 0 8.5-.4a2.8 2.8 0 0 0 2-2A29 29 0 0 0 23 12a29 29 0 0 0-.5-5.6z" />
+      <polygon points="9.75,15.02 15.5,12 9.75,8.98" fill="currentColor" stroke="none" />
     </svg>
   );
 }
 
-const socialLinks = [
-  { href: "https://www.instagram.com/kiteboardingbonaire/",            label: "Instagram", color: "hover:text-[#E4405F]", Icon: IconInstagram },
-  { href: "https://www.youtube.com/channel/UCetyGj1HHc4_T3a60_LDRSQ", label: "YouTube",   color: "hover:text-[#FF0000]", Icon: IconYoutube   },
-  { href: WHATSAPP_URL,                                                 label: "WhatsApp",  color: "hover:text-[#25D366]", Icon: () => <MessageCircle size={20} /> },
-];
-
-async function subscribeToBrevo(email: string): Promise<{ ok: boolean; message: string }> {
-  try {
-    const res = await fetch("https://api.brevo.com/v3/contacts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "api-key": BREVO_API_KEY },
-      body: JSON.stringify({ email, listIds: [BREVO_LIST_ID], updateEnabled: true }),
-    });
-    if (res.status === 201 || res.status === 204) return { ok: true, message: "You're on the list!" };
-    const data = await res.json().catch(() => ({}));
-    if ((data as any)?.code === "duplicate_parameter") return { ok: true, message: "You're already subscribed!" };
-    return { ok: false, message: "Something went wrong. Try again." };
-  } catch {
-    return { ok: false, message: "Network error. Try again." };
-  }
-}
+const NAVY = "hsl(211,100%,12%)";
+const CYAN = "hsl(186,100%,42%)";
+const WHATSAPP = "https://wa.me/5997015483?text=Hi!%20I'd%20like%20to%20know%20more%20about%20kite%20lessons%20in%20Bonaire";
 
 export default function Footer() {
-  const [email,   setEmail]   = useState("");
-  const [status,  setStatus]  = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [message, setMessage] = useState("");
-
-  async function handleNewsletter(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email) return;
-    setStatus("loading");
-    const result = await subscribeToBrevo(email);
-    setStatus(result.ok ? "success" : "error");
-    setMessage(result.message);
-    if (result.ok) setEmail("");
-  }
-
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer style={{ background: NAVY }} className="relative overflow-hidden">
 
-      {/* STINAPA Warning Bar — compact on mobile */}
-      <div style={{ background: "linear-gradient(90deg, #4caf50, #f5c518, #e8643c)", color: "#1a1a1a" }} className="py-2 md:py-3">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="font-body font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-wide leading-snug">
-            ⚠️ Mandatory STINAPA Nature Fee Required.{" "}
-            <a href="https://stinapa.bonairenaturefee.org/" target="_blank" rel="noopener noreferrer" className="underline decoration-2 underline-offset-2 hover:opacity-70 transition-opacity">
-              Purchase online
-            </a>
-          </p>
-        </div>
+      {/* Ghost wordmark */}
+      <div className="absolute -bottom-16 -left-6 select-none pointer-events-none" aria-hidden>
+        <span className="font-display font-black uppercase block"
+          style={{ fontSize: "clamp(180px,30vw,460px)", color: "rgba(255,255,255,0.025)", lineHeight: 0.82, letterSpacing: "-0.04em" }}>
+          KB
+        </span>
       </div>
 
-      {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="relative px-8 sm:px-14 lg:px-20 xl:px-28 pt-24 md:pt-32 pb-12">
 
-          {/* Column 1: Logo and About */}
-          <div className="md:col-span-1">
-            <Link href="/" className="inline-block mb-4">
-              <img src={logo.src} alt="Kiteboarding Bonaire" className="h-16 w-auto" />
-            </Link>
-            <p className="text-primary-foreground/80 font-body text-sm mb-4 leading-relaxed">
-              Bonaire's original kite school since 2001. IKO certified instructors, professional lessons and premium rental gear on Atlantis Beach.
+        {/* ── Top: statement + CTAs — no arrows ─────────────────────────── */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 pb-16 md:pb-20"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.10)" }}>
+
+          <div className="md:col-span-7">
+            <p className="font-display font-black uppercase mb-5"
+              style={{ color: CYAN, fontSize: 11, letterSpacing: "0.18em" }}>
+              The wind&rsquo;s already blowing
             </p>
-            <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className={`w-10 h-10 border-2 border-primary-foreground/30 flex items-center justify-center transition-all ${social.color} hover:border-current`} aria-label={social.label}>
-                  <social.Icon />
+            <h3 className="font-display font-black uppercase text-white"
+              style={{ fontSize: "clamp(48px,7.5vw,116px)", lineHeight: 0.84, letterSpacing: "-0.03em" }}>
+              Ride with<br /><span style={{ color: CYAN }}>us.</span>
+            </h3>
+          </div>
+
+          <div className="md:col-span-5 flex flex-col justify-end gap-3">
+            {/* No arrows — site-wide rule */}
+            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
+              className="font-display font-black uppercase tracking-widest px-7 py-5 text-center transition-opacity hover:opacity-90"
+              style={{ background: CYAN, color: "#fff", fontSize: 13 }}>
+              WhatsApp us
+            </a>
+            <Link href="/lessons"
+              className="font-display font-black uppercase tracking-widest px-7 py-5 text-center transition-colors hover:bg-white/5"
+              style={{ border: "1.5px solid rgba(255,255,255,0.35)", color: "#fff", fontSize: 13 }}>
+              Book a lesson
+            </Link>
+          </div>
+        </div>
+
+        {/* ── Middle: info row ───────────────────────────────────────────── */}
+        <div className="grid grid-cols-2 md:grid-cols-12 gap-10 md:gap-8 py-16">
+
+          {/* Brand + social + live wind widget */}
+          <div className="col-span-2 md:col-span-4">
+            <p className="font-display font-black uppercase text-white mb-3"
+              style={{ fontSize: 14, letterSpacing: "0.04em" }}>
+              Kiteboarding Bonaire
+            </p>
+            <p className="font-body mb-7"
+              style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.7 }}>
+              Bonaire&rsquo;s original kite school. Since 2001. Atlantis Beach.
+            </p>
+
+            <div className="flex items-center gap-5 mb-8">
+              {[
+                { Icon: InstagramIcon, href: "https://instagram.com/kiteboardingbonaire", label: "Instagram" },
+                { Icon: YoutubeIcon,   href: "#", label: "YouTube" },
+              ].map(({ Icon, href, label }, i) => (
+                <a key={i} href={href} target="_blank" rel="noopener noreferrer"
+                  aria-label={label} className="text-white/75 hover:text-white transition-colors">
+                  <Icon className="w-5 h-5" strokeWidth={1.5} />
                 </a>
               ))}
             </div>
+
+            {/* Live wind — Apple widget card */}
+            <WindCard />
           </div>
 
-          {/* Column 2: Quick Links */}
-          <div className="md:col-span-1">
-            <h3 className="font-display font-black text-sm uppercase tracking-widest mb-5 text-primary-foreground">Quick Links</h3>
-            <ul className="space-y-2.5">
-              {quickLinks.map((link) => (
-                <li key={link.href}>
-                  <Link href={link.href} className="font-body text-sm text-primary-foreground/80 hover:text-accent transition-colors uppercase tracking-wide">
-                    {link.label}
+          {/* Quick links */}
+          <div className="col-span-1 md:col-span-2">
+            <p className="font-display font-black uppercase mb-5"
+              style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", letterSpacing: "0.18em" }}>
+              Explore
+            </p>
+            <ul className="flex flex-col gap-3">
+              {[
+                { label: "Lessons",   href: "/lessons" },
+                { label: "Rentals",   href: "/rentals" },
+                { label: "Trips",     href: "/trips" },
+                { label: "Live wind", href: "/wind" },
+                { label: "About",     href: "/about" },
+                { label: "FAQ",       href: "/info" },
+              ].map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href}
+                    className="font-body transition-colors hover:text-white"
+                    style={{ fontSize: 14, color: "rgba(255,255,255,0.75)" }}>
+                    {l.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Column 3: Contact */}
-          <div className="md:col-span-1">
-            <h3 className="font-display font-black text-sm uppercase tracking-widest mb-5 text-primary-foreground">Contact</h3>
-            <ul className="space-y-3">
-              <li>
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-primary-foreground/80 hover:text-[#25D366] transition-colors">
-                  <MessageCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-body text-sm font-bold uppercase tracking-wide">WhatsApp</div>
-                    <div className="font-body text-xs text-primary-foreground/70">{PHONE_NUMBER}</div>
-                  </div>
+          {/* Contact */}
+          <div className="col-span-1 md:col-span-3">
+            <p className="font-display font-black uppercase mb-5"
+              style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", letterSpacing: "0.18em" }}>
+              Find us
+            </p>
+            <ul className="flex flex-col gap-4">
+              <li className="flex items-start gap-3">
+                <MessageCircle className="w-3.5 h-3.5 mt-1 flex-shrink-0" style={{ color: CYAN }} strokeWidth={1.75} />
+                <a href={WHATSAPP} className="font-body transition-colors hover:text-white"
+                  style={{ fontSize: 14, color: "rgba(255,255,255,0.85)" }}>
+                  +599 701 5483
+                  <span className="block mt-0.5" style={{ fontSize: 12, color: "rgba(255,255,255,0.60)" }}>
+                    WhatsApp · daily 9–17
+                  </span>
                 </a>
               </li>
-              <li>
-                <a href={`tel:${WHATSAPP_NUMBER}`} className="flex items-start gap-3 text-primary-foreground/80 hover:text-accent transition-colors">
-                  <Phone className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-body text-sm font-bold uppercase tracking-wide">Phone</div>
-                    <div className="font-body text-xs text-primary-foreground/70">{PHONE_NUMBER}</div>
-                  </div>
+              <li className="flex items-start gap-3">
+                <Mail className="w-3.5 h-3.5 mt-1 flex-shrink-0" style={{ color: CYAN }} strokeWidth={1.75} />
+                <a href="mailto:info@kiteboardingbonaire.com"
+                  className="font-body transition-colors hover:text-white"
+                  style={{ fontSize: 14, color: "rgba(255,255,255,0.85)" }}>
+                  info@kiteboardingbonaire.com
                 </a>
               </li>
-              <li>
-                <a href={`mailto:${EMAIL}`} className="flex items-start gap-3 text-primary-foreground/80 hover:text-accent transition-colors">
-                  <Mail className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-body text-sm font-bold uppercase tracking-wide">Email</div>
-                    <div className="font-body text-xs text-primary-foreground/70 break-all">{EMAIL}</div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                {/* Location now links to Google Maps */}
-                <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 text-primary-foreground/80 hover:text-accent transition-colors">
-                  <MapPin className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <div className="font-body text-sm font-bold uppercase tracking-wide">Location</div>
-                    <div className="font-body text-xs text-primary-foreground/70">Atlantis Beach, Kralendijk, Bonaire</div>
-                  </div>
-                </a>
+              <li className="flex items-start gap-3">
+                <MapPin className="w-3.5 h-3.5 mt-1 flex-shrink-0" style={{ color: CYAN }} strokeWidth={1.75} />
+                <span className="font-body" style={{ fontSize: 14, color: "rgba(255,255,255,0.85)" }}>
+                  Atlantis Beach, Kralendijk
+                  <span className="block mt-0.5" style={{ fontSize: 12, color: "rgba(255,255,255,0.60)" }}>
+                    Wind permitting — usually permits.
+                  </span>
+                </span>
               </li>
             </ul>
           </div>
 
-          {/* Column 4: Hours and Newsletter */}
-          <div className="md:col-span-1">
-            <h3 className="font-display font-black text-sm uppercase tracking-widest mb-5 text-primary-foreground">Hours</h3>
-            <div className="text-primary-foreground/80 font-body text-sm mb-6">
-              <p className="font-bold uppercase tracking-wide mb-1 text-primary-foreground">Daily</p>
-              <p>9:00 AM to 5:00 PM</p>
-              <p className="text-xs mt-1 text-primary-foreground/70">Wind permitting</p>
-            </div>
-            <h3 className="font-display font-black text-sm uppercase tracking-widest mb-4 text-primary-foreground">Stay Updated</h3>
-            <p className="text-primary-foreground/80 font-body text-sm mb-4">Get news, trip updates and exclusive offers.</p>
-            <form className="flex gap-2" onSubmit={handleNewsletter}>
-              <label htmlFor="newsletter-email" className="sr-only">Your email</label>
-              <input id="newsletter-email" type="email" required placeholder="Your email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={status === "loading" || status === "success"} className="flex-1 px-4 py-2 bg-primary-foreground/10 border-2 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/60 font-body text-sm focus:outline-none focus:border-accent disabled:opacity-50" />
-              <button type="submit" disabled={status === "loading" || status === "success"} className="px-4 py-2 bg-accent hover:brightness-110 text-white font-display font-black text-sm uppercase border-2 border-accent transition-all disabled:opacity-60 disabled:cursor-not-allowed">
-                {status === "loading" ? "..." : "Go"}
+          {/* Newsletter */}
+          <div className="col-span-2 md:col-span-3">
+            <p className="font-display font-black uppercase mb-5"
+              style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", letterSpacing: "0.18em" }}>
+              Stay in the wind
+            </p>
+            <p className="font-body mb-5"
+              style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.6 }}>
+              Trip dates, last-minute openings, swell calls.
+            </p>
+            <form className="flex flex-col gap-2.5"
+              onSubmit={(e) => { e.preventDefault(); }}>
+              <input
+                type="email"
+                placeholder="your@email.com"
+                aria-label="Email address"
+                className="px-4 py-3.5 font-body bg-transparent text-white placeholder-white/40 focus:outline-none focus:border-white/60 transition-colors"
+                style={{ border: "1px solid rgba(255,255,255,0.25)", fontSize: 14 }}
+              />
+              <button type="submit"
+                className="font-display font-black uppercase tracking-widest py-3.5 transition-opacity hover:opacity-90"
+                style={{ background: "#fff", color: NAVY, fontSize: 11 }}>
+                Subscribe
               </button>
             </form>
-            {message && <p className={`mt-2 font-body text-xs ${status === "success" ? "text-[#4ade80]" : "text-red-400"}`}>{message}</p>}
-          </div>
-
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className="border-t border-primary-foreground/15">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 py-5">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-primary-foreground/60 font-body text-xs">{`© ${new Date().getFullYear()} Kiteboarding Bonaire. All rights reserved.`}</p>
-            <div className="flex gap-6">
-              <Link href="/privacy" className="text-primary-foreground/60 hover:text-accent transition-colors font-body text-xs uppercase tracking-wide">Privacy Policy</Link>
-              <Link href="/terms" className="text-primary-foreground/60 hover:text-accent transition-colors font-body text-xs uppercase tracking-wide">Terms of Service</Link>
-            </div>
           </div>
         </div>
-      </div>
 
+        {/* ── Bottom strip ───────────────────────────────────────────────── */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-10"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.10)" }}>
+          <p className="font-body" style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>
+            © 2026 Kiteboarding Bonaire · Wind permitting, always.
+          </p>
+          <div className="flex items-center gap-6">
+            {[{ label: "Privacy", href: "/privacy" }, { label: "Terms", href: "/terms" }].map((l) => (
+              <Link key={l.label} href={l.href}
+                className="font-body hover:text-white transition-colors"
+                style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
     </footer>
   );
 }

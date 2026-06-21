@@ -164,48 +164,83 @@ html {
 .font-body    { font-family: var(--font-body); }
 
 /* ── Custom component classes ────────────────────────────────────────────── */
-.btn-cyan {
-  background-color: hsl(var(--accent));
-  color: hsl(var(--accent-foreground));
-  padding: 1rem 2rem;
-  font-family: var(--font-display);
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 2px solid hsl(var(--accent));
-  transition: all 0.2s;
+/* ── Button base — shared across all variants ────────────────────── */
+.btn-base {
   display: inline-block;
   text-align: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.8125rem;        /* 13px */
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.875rem 2.5rem;    /* 14px 40px */
+  border-radius: 0px;
+  border: 2px solid transparent;
+  transition: filter 0.2s, background-color 0.2s, color 0.2s;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Cyan — primary CTA */
+.btn-cyan {
+  background-color: hsl(var(--accent));
+  color: #fff;
+  border-color: hsl(var(--accent));
+  display: inline-block;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.875rem 2.5rem;
+  border-radius: 0px;
+  transition: filter 0.2s;
+  white-space: nowrap;
+  cursor: pointer;
 }
 .btn-cyan:hover { filter: brightness(1.1); }
 
+/* Outline white — secondary CTA on dark backgrounds */
 .btn-outline-white {
   background-color: transparent;
-  color: white;
-  padding: 1rem 2rem;
-  font-family: var(--font-display);
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 2px solid white;
-  transition: all 0.2s;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.6);
   display: inline-block;
   text-align: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.875rem 2.5rem;
+  border-radius: 0px;
+  transition: background-color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+  cursor: pointer;
 }
-.btn-outline-white:hover { background-color: rgba(255,255,255,0.1); }
+.btn-outline-white:hover {
+  background-color: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.9);
+}
 
+/* Outline dark — secondary CTA on light backgrounds */
 .btn-outline-dark {
   background-color: transparent;
   color: hsl(var(--foreground));
-  padding: 1rem 2rem;
-  font-family: var(--font-display);
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
   border: 2px solid hsl(var(--foreground));
-  transition: all 0.2s;
   display: inline-block;
   text-align: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.875rem 2.5rem;
+  border-radius: 0px;
+  transition: background-color 0.2s, color 0.2s;
+  white-space: nowrap;
+  cursor: pointer;
 }
 .btn-outline-dark:hover {
   background-color: hsl(var(--foreground));
