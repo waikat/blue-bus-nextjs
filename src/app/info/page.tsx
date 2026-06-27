@@ -14,7 +14,7 @@ const INK = "hsl(0,0%,10%)";
 const WHATSAPP_URL = "https://wa.me/5997015483?text=Hi!%20I%20have%20a%20question%20about%20Kiteboarding%20Bonaire";
 const WEB3FORMS_KEY = "c6c12fda-3cd9-49b7-a3e8-fc659e870c9c";
 
-const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } };
+const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
 
 const inquiryTypes = ["Work with us (instructor / staff)", "Dealer or supplier", "Partnership or collaboration", "Press or media", "Other"];

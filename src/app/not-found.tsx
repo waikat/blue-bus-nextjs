@@ -8,7 +8,7 @@ const WHATSAPP_URL = "https://wa.me/5997015483?text=Hi!%20I%20have%20a%20questio
 
 const fadeUp = {
   hidden:  { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 as const } },
 };
 const stagger = {
   hidden:  {},

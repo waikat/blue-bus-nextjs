@@ -26,7 +26,7 @@ const heroReveal = {
   hidden:  { opacity: 0, y: 16 },
   visible: (i: number) => ({
     opacity: 1, y: 0,
-    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: i * 0.1 },
+    transition: { duration: 0.5, delay: i * 0.1 },
   }),
 };
 const fadeIn = {

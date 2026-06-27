@@ -27,7 +27,7 @@ const testimonials = [
   { name: "Robert",                flag: "🇳🇱", country: "Nederland",    quote: "Prachtige locatie en hele vriendelijke mensen, mooi groot strand. Met alle geduld en aandacht werden de lessen gegeven. Absolute aanrader om hier je lessen te gaan nemen of lekker bezig te gaan op het water!" },
 ];
 
-const fadeUp = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } } };
+const fadeUp = { hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 as const } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
 
 export default function NLHomePage() {
@@ -230,7 +230,7 @@ export default function NLHomePage() {
               { number: "02", title: nl.home.reason02Title, desc: nl.home.reason02Desc },
               { number: "03", title: nl.home.reason03Title, desc: nl.home.reason03Desc },
             ].map((item, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }} className={`p-8 md:p-10 ${i > 0 ? "col-divider-dark-sm" : ""}`}>
+              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.6 as const }} className={`p-8 md:p-10 ${i > 0 ? "col-divider-dark-sm" : ""}`}>
                 <p className="font-display font-black text-white/20 mb-4 select-none leading-none" style={{ fontSize: "clamp(64px, 8vw, 100px)" }}>{item.number}</p>
                 <div className="w-10 h-[3px] bg-accent mb-5" />
                 <h3 className="font-display font-black text-white uppercase tracking-tighter text-2xl leading-[0.95] mb-4">{item.title}</h3>

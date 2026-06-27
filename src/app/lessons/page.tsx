@@ -31,7 +31,7 @@ const SAND        = "hsl(42,35%,97%)";
 const INK         = "hsl(0,0%,10%)";
 
 // ─── ANIMATIONS ───────────────────────────────────────────────────────────────
-const fadeIn = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.6, ease: "easeOut" } } };
+const fadeIn = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.6 } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
