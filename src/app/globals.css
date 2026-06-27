@@ -7,133 +7,97 @@
   --font-display: "Outfit", system-ui, sans-serif;
   --font-body:    "Raleway", system-ui, sans-serif;
 
-  /* ── Colors — all tokens used as Tailwind utilities ─────────────── */
+  /* ── Colors ─────────────────────────────────────────────────────── */
   --color-background:           hsl(var(--background));
   --color-foreground:           hsl(var(--foreground));
-
   --color-card:                 hsl(var(--card));
   --color-card-foreground:      hsl(var(--card-foreground));
-
   --color-popover:              hsl(var(--popover));
   --color-popover-foreground:   hsl(var(--popover-foreground));
-
   --color-primary:              hsl(var(--primary));
   --color-primary-foreground:   hsl(var(--primary-foreground));
-
   --color-secondary:            hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
-
   --color-muted:                hsl(var(--muted));
   --color-muted-foreground:     hsl(var(--muted-foreground));
-
   --color-accent:               hsl(var(--accent));
   --color-accent-foreground:    hsl(var(--accent-foreground));
-
   --color-destructive:          hsl(var(--destructive));
   --color-destructive-foreground: hsl(var(--destructive-foreground));
-
   --color-border:               hsl(var(--border));
   --color-input:                hsl(var(--input));
   --color-ring:                 hsl(var(--ring));
-
   --color-kbb-black:            hsl(var(--kbb-black));
   --color-kbb-white:            hsl(var(--kbb-white));
-  --color-seafoam:              hsl(var(--seafoam));
-  --color-coral:                hsl(var(--coral));
+  --color-sand:                 hsl(var(--sand));
 
-  --color-sidebar:              hsl(var(--sidebar-background));
-  --color-sidebar-foreground:   hsl(var(--sidebar-foreground));
-  --color-sidebar-primary:      hsl(var(--sidebar-primary));
-  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
-  --color-sidebar-accent:       hsl(var(--sidebar-accent));
-  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
-  --color-sidebar-border:       hsl(var(--sidebar-border));
-  --color-sidebar-ring:         hsl(var(--sidebar-ring));
+  /* ── Radius — hybrid system ──────────────────────────────────────
+     Sharp (0px):  nav, footer, buttons, photos, hero sections
+     Soft  (8px):  inputs, tags, badges
+     Card  (12px): package cards, testimonials, modals, info cards
+     Pill:         status badges only
+  ──────────────────────────────────────────────────────────────── */
+  --radius-none: 0px;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-pill: 9999px;
 
-  /* ── Border radius — all zero for KBB sharp identity ────────────── */
-  --radius-sm: 0px;
-  --radius-md: 0px;
-  --radius-lg: 0px;
-  --radius-xl: 0px;
+  /* ── Shadows ─────────────────────────────────────────────────────
+     Subtle:  default cards
+     Lifted:  featured cards
+     Float:   modals only
+  ──────────────────────────────────────────────────────────────── */
+  --shadow-subtle: 0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05);
+  --shadow-lifted: 0 4px 16px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.05);
+  --shadow-float:  0 8px 32px rgba(0,0,0,0.14), 0 0 0 0.5px rgba(0,0,0,0.05);
 }
 
 /* ── CSS Variables ───────────────────────────────────────────────────────── */
 :root {
-  --background:          0 0% 100%;
-  --foreground:          0 0% 7%;
+  /* Background — warm sand, not cold white */
+  --background:          42 35% 97%;
+  --foreground:          0 0% 10%;
 
   --card:                0 0% 100%;
-  --card-foreground:     0 0% 7%;
+  --card-foreground:     0 0% 10%;
 
   --popover:             0 0% 100%;
-  --popover-foreground:  0 0% 7%;
+  --popover-foreground:  0 0% 10%;
 
-  --primary:             211 100% 22%;
+  /* Primary — Ocean Blue (the bus) */
+  --primary:             213 85% 38%;
   --primary-foreground:  0 0% 100%;
 
-  --secondary:           211 100% 30%;
+  /* Secondary — Deep Ocean */
+  --secondary:           213 85% 22%;
   --secondary-foreground: 0 0% 100%;
 
-  --muted:               210 15% 96%;
+  --muted:               42 20% 93%;
   --muted-foreground:    215 12% 40%;
 
+  /* Accent — Cyan (Caribbean water) */
   --accent:              186 100% 42%;
   --accent-foreground:   0 0% 100%;
 
   --destructive:         0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --border:              0 0% 88%;
-  --input:               0 0% 88%;
-  --ring:                211 100% 22%;
+  --border:              42 15% 88%;
+  --input:               42 15% 88%;
+  --ring:                213 85% 38%;
 
-  --radius:              0px;
+  --radius:              12px;
 
-  --navy:                211 100% 22%;
+  /* Brand tokens — use these in inline styles across pages */
+  --ocean:               213 85% 38%;
+  --ocean-deep:          213 85% 22%;
+  --ocean-dark:          213 85% 16%;
   --cyan:                186 100% 42%;
-  --kbb-black:           0 0% 7%;
+  --sand:                42 35% 97%;
+  --sand-mid:            42 20% 93%;
+  --kbb-black:           0 0% 10%;
   --kbb-white:           0 0% 100%;
-  --seafoam:             163 56% 52%;
-  --coral:               18  84% 54%;
-
-  --sidebar-background:  0 0% 98%;
-  --sidebar-foreground:  240 5.3% 26.1%;
-  --sidebar-primary:     240 5.9% 10%;
-  --sidebar-primary-foreground: 0 0% 98%;
-  --sidebar-accent:      240 4.8% 95.9%;
-  --sidebar-accent-foreground: 240 5.9% 10%;
-  --sidebar-border:      220 13% 91%;
-  --sidebar-ring:        217.2 91.2% 59.8%;
-}
-
-.dark {
-  --background:          211 30% 8%;
-  --foreground:          0 0% 95%;
-  --card:                211 30% 12%;
-  --card-foreground:     0 0% 95%;
-  --popover:             211 30% 12%;
-  --popover-foreground:  0 0% 95%;
-  --primary:             186 100% 42%;
-  --primary-foreground:  211 30% 8%;
-  --secondary:           211 100% 30%;
-  --secondary-foreground: 0 0% 100%;
-  --muted:               211 25% 18%;
-  --muted-foreground:    215 15% 60%;
-  --accent:              186 100% 42%;
-  --accent-foreground:   211 30% 8%;
-  --destructive:         0 63% 31%;
-  --destructive-foreground: 0 0% 100%;
-  --border:              211 25% 20%;
-  --input:               211 25% 20%;
-  --ring:                186 100% 42%;
-  --sidebar-background:  240 5.9% 10%;
-  --sidebar-foreground:  240 4.8% 95.9%;
-  --sidebar-primary:     224.3 76.3% 48%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent:      240 3.7% 15.9%;
-  --sidebar-accent-foreground: 240 4.8% 95.9%;
-  --sidebar-border:      240 3.7% 15.9%;
-  --sidebar-ring:        217.2 91.2% 59.8%;
 }
 
 /* ── Base styles ─────────────────────────────────────────────────────────── */
@@ -154,38 +118,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 80px;
+  scroll-padding-top: 88px;
   background-color: hsl(var(--primary));
 }
 
-/* ── Font utility classes ────────────────────────────────────────────────── */
+/* ── Font utilities ──────────────────────────────────────────────────────── */
 .font-display { font-family: var(--font-display); }
 .font-body    { font-family: var(--font-body); }
 
-/* ── Custom component classes ────────────────────────────────────────────── */
-/* ── Button base — shared across all variants ────────────────────── */
-.btn-base {
-  display: inline-block;
-  text-align: center;
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 0.8125rem;        /* 13px */
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0.875rem 2.5rem;    /* 14px 40px */
-  border-radius: 0px;
-  border: 2px solid transparent;
-  transition: filter 0.2s, background-color 0.2s, color 0.2s;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-/* Cyan — primary CTA */
-.btn-cyan {
-  background-color: hsl(var(--accent));
-  color: #fff;
-  border-color: hsl(var(--accent));
+/* ── Buttons — sharp corners always, min 48px tap target ─────────────────── */
+.btn-cyan,
+.btn-outline-white,
+.btn-outline-dark {
   display: inline-block;
   text-align: center;
   font-family: var(--font-display);
@@ -195,58 +139,55 @@ html {
   letter-spacing: 0.1em;
   padding: 0.875rem 2.5rem;
   border-radius: 0px;
-  transition: filter 0.2s;
   white-space: nowrap;
   cursor: pointer;
+  min-height: 48px;
+  transition: filter 0.2s, background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-cyan {
+  background-color: hsl(var(--accent));
+  color: #fff;
+  border: 2px solid hsl(var(--accent));
 }
 .btn-cyan:hover { filter: brightness(1.1); }
 
-/* Outline white — secondary CTA on dark backgrounds */
 .btn-outline-white {
   background-color: transparent;
   color: #fff;
   border: 2px solid rgba(255,255,255,0.6);
-  display: inline-block;
-  text-align: center;
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 0.8125rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0.875rem 2.5rem;
-  border-radius: 0px;
-  transition: background-color 0.2s, border-color 0.2s;
-  white-space: nowrap;
-  cursor: pointer;
 }
 .btn-outline-white:hover {
   background-color: rgba(255,255,255,0.1);
   border-color: rgba(255,255,255,0.9);
 }
 
-/* Outline dark — secondary CTA on light backgrounds */
 .btn-outline-dark {
   background-color: transparent;
   color: hsl(var(--foreground));
   border: 2px solid hsl(var(--foreground));
-  display: inline-block;
-  text-align: center;
-  font-family: var(--font-display);
-  font-weight: 900;
-  font-size: 0.8125rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0.875rem 2.5rem;
-  border-radius: 0px;
-  transition: background-color 0.2s, color 0.2s;
-  white-space: nowrap;
-  cursor: pointer;
 }
 .btn-outline-dark:hover {
   background-color: hsl(var(--foreground));
   color: hsl(var(--background));
 }
 
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.card {
+  background: hsl(var(--card));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-subtle);
+  overflow: hidden;
+}
+
+.card-lifted {
+  background: hsl(var(--card));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lifted);
+  overflow: hidden;
+}
+
+/* ── Category label ──────────────────────────────────────────────────────── */
 .category-label {
   color: hsl(var(--accent));
   font-family: var(--font-display);
@@ -256,27 +197,15 @@ html {
   letter-spacing: 0.25em;
 }
 
-.col-divider-light { border-color: rgba(0,0,0,0.08); }
-@media (min-width: 768px) {
-  .col-divider-light { border-left-width: 1px; padding-left: 3rem; }
-}
-
-.col-divider-dark { border-color: rgba(255,255,255,0.12); }
-@media (min-width: 768px) {
-  .col-divider-dark { border-left-width: 1px; padding-left: 3rem; }
-}
-
-.col-divider-light-sm { border-color: rgba(0,0,0,0.08); }
-@media (min-width: 768px) {
-  .col-divider-light-sm { border-left-width: 1px; padding-left: 2rem; }
-}
-
-.col-divider-dark-sm { border-color: rgba(255,255,255,0.12); }
-@media (min-width: 768px) {
-  .col-divider-dark-sm { border-left-width: 1px; padding-left: 2rem; }
-}
-
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 
+/* ── Safe area ───────────────────────────────────────────────────────────── */
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* ── Wind pulse ──────────────────────────────────────────────────────────── */
+@keyframes kbb-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.85); }
+}

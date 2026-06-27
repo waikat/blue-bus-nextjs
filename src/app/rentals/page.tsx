@@ -2,134 +2,324 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import BookingModal from "@/components/BookingModal";
+import lessonAction from "@/assets/lesson-action.jpg";
 import rentalsHero from "@/assets/rentals-hero.jpg";
+import beachSetup from "@/assets/beach-setup.jpg";
 
-const WHATSAPP_URL      = "https://wa.me/5997015483?text=Hi!%20I'm%20interested%20in%20equipment%20rentals%20at%20Bonaire";
+const WHATSAPP_URL = "https://wa.me/5997015483?text=Hi!%20I'm%20interested%20in%20equipment%20rentals%20at%20Bonaire";
 const VIKING_RENTALS_ID = "g37000000040000005a124865";
-const NAVY_DEEP         = "hsl(211,100%,12%)";
 
-const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
-const fadeUp  = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const } } };
+// Design system colors
+const OCEAN = "hsl(213,85%,38%)";
+const OCEAN_DEEP = "hsl(213,85%,22%)";
+const CYAN = "hsl(186,100%,42%)";
+const SAND = "hsl(42,35%,97%)";
+const INK = "hsl(0,0%,10%)";
+
+// Animations (hero only)
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } };
+const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } } };
+
+// All other sections: opacity fadeIn ONLY
+const fadeInOnly = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } };
 
 type Duration = "half" | "full";
 
+// ToggleSwitch Component (from lessons page)
+function ToggleSwitch({
+  leftLabel,
+  rightLabel,
+  value,
+  onChange,
+}: {
+  leftLabel: string;
+  rightLabel: string;
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-4">
+      <button onClick={() => onChange(false)} className="text-right transition-all duration-200" style={{ minWidth: 100 }}>
+        <span className="font-black uppercase tracking-[0.12em] block transition-colors duration-200" style={{ fontSize: 12, color: !value ? INK : "rgba(0,0,0,0.35)" }}>
+          {leftLabel}
+        </span>
+      </button>
+
+      <button
+        onClick={() => onChange(!value)}
+        aria-pressed={value}
+        className="flex-shrink-0 relative transition-colors duration-300"
+        style={{
+          width: 50,
+          height: 28,
+          borderRadius: 4,
+          background: value ? CYAN : OCEAN,
+          border: "none",
+          cursor: "pointer",
+          outline: "none",
+        }}
+      >
+        <div
+          className="absolute"
+          style={{
+            top: 3,
+            left: value ? 26 : 3,
+            width: 22,
+            height: 22,
+            borderRadius: 2,
+            background: "#fff",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+            transition: "left 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)",
+          }}
+        />
+      </button>
+
+      <button onClick={() => onChange(true)} className="text-left transition-all duration-200" style={{ minWidth: 100 }}>
+        <span className="font-black uppercase tracking-[0.12em] block transition-colors duration-200" style={{ fontSize: 12, color: value ? INK : "rgba(0,0,0,0.35)" }}>
+          {rightLabel}
+        </span>
+      </button>
+    </div>
+  );
+}
+
 const tiers = [
-  { name: "Standard", tagline: "Reliable freeride gear", desc: "Great condition, regularly serviced. Everything you need for a solid session.", featured: false, badge: null as string | null, rows: [{ product: "Complete set", half: "$80",  full: "$120", note: "Kite + bar + board + harness" }, { product: "Kite + Bar", half: "$60", full: "$90", note: "Bring your own board" }, { product: "Board only", half: "$25", full: "$40", note: "Twintip or directional" }] },
-  { name: "Premium",  tagline: "Top-of-line gear",       desc: "Latest models, premium brands. +$20 per session over Standard.",             featured: true,  badge: "Most Popular" as string | null, rows: [{ product: "Complete set", half: "$100", full: "$145", note: "Kite + bar + board + harness" }, { product: "Kite + Bar", half: "$80", full: "$115", note: "Bring your own board" }, { product: "Board only", half: "$45", full: "$65", note: "Twintip or directional" }] },
-  { name: "Foil",     tagline: "Experienced foilers only", desc: "Assessment required before rental. Ask us on the beach or via WhatsApp.",  featured: false, badge: null as string | null, rows: [{ product: "Foil complete set", half: "$100", full: "$140", note: "Wing + bar + foilboard" }, { product: "Foilboard only", half: "$50", full: "$75", note: "Own wing and bar" }] },
+  {
+    name: "Standard",
+    tagline: "Reliable freeride gear",
+    desc: "Great condition, regularly serviced. Everything you need for a solid session.",
+    featured: false,
+    rows: [
+      { product: "Complete set", half: "$80", full: "$120", note: "Kite, bar, board, harness" },
+      { product: "Kite and bar", half: "$60", full: "$90", note: "Bring your own board" },
+      { product: "Board only", half: "$25", full: "$40", note: "Twintip or directional" },
+    ],
+  },
+  {
+    name: "Premium",
+    tagline: "Top-of-line gear",
+    desc: "Latest models, premium brands. Plus $20 per session over Standard.",
+    featured: true,
+    rows: [
+      { product: "Complete set", half: "$100", full: "$145", note: "Kite, bar, board, harness" },
+      { product: "Kite and bar", half: "$80", full: "$115", note: "Bring your own board" },
+      { product: "Board only", half: "$45", full: "$65", note: "Twintip or directional" },
+    ],
+  },
+  {
+    name: "Foil",
+    tagline: "Experienced foilers only",
+    desc: "Assessment required before rental. Ask us on the beach or via WhatsApp.",
+    featured: false,
+    rows: [
+      { product: "Foil complete set", half: "$100", full: "$140", note: "Wing, bar, foilboard" },
+      { product: "Foilboard only", half: "$50", full: "$75", note: "Own wing and bar" },
+    ],
+  },
 ];
 
 const bundles = [
-  { sessions: "1 session",   price: "$80",  per: "$80 / session",  savings: "",          popular: false, best: false },
-  { sessions: "3 sessions",  price: "$225", per: "$75 / session",  savings: "Save $15",  popular: true,  best: false },
-  { sessions: "5 sessions",  price: "$360", per: "$72 / session",  savings: "Save $40",  popular: false, best: false },
-  { sessions: "10 sessions", price: "$680", per: "$68 / session",  savings: "Save $120", popular: false, best: true  },
+  { sessions: "1 session", price: "$80", per: "$80 per session", savings: "", best: false },
+  { sessions: "3 sessions", price: "$225", per: "$75 per session", savings: "Save $15", best: false },
+  { sessions: "5 sessions", price: "$360", per: "$72 per session", savings: "Save $40", best: false },
+  { sessions: "10 sessions", price: "$680", per: "$68 per session", savings: "Save $120", best: true },
 ];
 
-function TierCard({ tier, duration, onBook }: { tier: typeof tiers[0]; duration: Duration; onBook: () => void }) {
-  const isFeatured = tier.featured;
-  const mainRow    = tier.rows[0];
-  const mainPrice  = duration === "half" ? mainRow.half : mainRow.full;
+function TierCard({ tier, duration, onBook }: { tier: (typeof tiers)[0]; duration: Duration; onBook: () => void }) {
+  const mainPrice = duration === "half" ? tier.rows[0].half : tier.rows[0].full;
+
   return (
-    <div className="relative flex flex-col w-full h-full border-2 border-foreground transition-all duration-300" style={{ background: isFeatured ? NAVY_DEEP : "white" }}>
-      {tier.badge && (
-        <div className="absolute -top-px left-0 right-0 flex justify-center">
-          <span className="bg-accent text-white font-display font-black text-xs uppercase tracking-widest px-4 py-1.5 whitespace-nowrap">{tier.badge}</span>
-        </div>
-      )}
-      <div className={`p-8 md:p-10 flex flex-col flex-1 ${tier.badge ? "pt-10" : ""}`}>
-        <div className="mb-6">
-          <p className={`category-label mb-2 ${isFeatured ? "text-accent" : ""}`}>{tier.tagline}</p>
-          <h3 className={`font-display font-black text-2xl md:text-3xl uppercase tracking-tighter ${isFeatured ? "text-white" : "text-foreground"}`}>{tier.name}</h3>
-        </div>
-        <AnimatePresence mode="wait">
-          <motion.div key={mainPrice} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.18 }} className="mb-1">
-            <span className={`font-display font-black leading-none text-[clamp(48px,5vw,72px)] ${isFeatured ? "text-white" : "text-foreground"}`}>{mainPrice}</span>
-          </motion.div>
-        </AnimatePresence>
-        <p className={`text-xs font-body font-bold uppercase tracking-wider mb-8 ${isFeatured ? "text-accent" : "text-foreground/50"}`}>
-          Complete set. {duration === "half" ? "Half day 3-4h" : "Full day 5-8h"}.
+    <div
+      className={`flex flex-col h-full rounded-[12px] p-8 md:p-10 ${
+        tier.featured ? "bg-[hsl(213,85%,22%)]" : "bg-white"
+      }`}
+      style={{
+        boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)",
+      }}
+    >
+      {/* Label and Name */}
+      <div className="mb-8">
+        <p className={`text-[12px] uppercase tracking-[0.12em] font-bold mb-2 ${tier.featured ? "text-[hsl(186,100%,42%)]" : "text-[hsl(186,100%,42%)]"}`}>
+          {tier.tagline}
         </p>
-        <div className={`flex-1 border-t pt-6 space-y-5 mb-8 ${isFeatured ? "border-white/10" : "border-foreground/10"}`}>
-          {tier.rows.map((row, i) => (
-            <div key={i} className="flex items-start justify-between gap-4">
-              <div>
-                <p className={`text-sm font-body font-bold ${isFeatured ? "text-white" : "text-foreground"}`}>{row.product}</p>
-                <p className={`text-xs font-body mt-0.5 ${isFeatured ? "text-white/70" : "text-foreground/60"}`}>{row.note}</p>
-              </div>
-              <AnimatePresence mode="wait">
-                <motion.span key={duration + i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.15 }} className={`font-display font-black text-xl flex-shrink-0 ${isFeatured ? "text-white" : "text-foreground"}`}>
-                  {duration === "half" ? row.half : row.full}
-                </motion.span>
-              </AnimatePresence>
-            </div>
-          ))}
-        </div>
-        <button onClick={onBook} className={`w-full inline-block text-center font-display font-black py-4 uppercase tracking-widest transition-all text-sm border-2 ${isFeatured ? "bg-accent text-white border-accent hover:brightness-110" : "bg-foreground text-background border-foreground hover:bg-foreground/80"}`}>
-          Reserve Gear
-        </button>
+        <h3 className={`text-[clamp(28px,3.8vw,48px)] font-black uppercase tracking-tighter leading-[0.88] ${tier.featured ? "text-white" : "text-[hsl(0,0%,10%)]"}`}>
+          {tier.name}
+        </h3>
       </div>
+
+      {/* Price Animation */}
+      <AnimatePresence mode="wait">
+        <motion.div key={mainPrice} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="mb-2">
+          <div className={`text-[clamp(48px,5vw,72px)] font-black leading-none ${tier.featured ? "text-white" : "text-[hsl(0,0%,10%)]"}`}>
+            {mainPrice}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      <p className={`text-[11px] uppercase tracking-[0.12em] font-bold mb-8 ${tier.featured ? "text-[hsl(186,100%,42%)]" : "text-[hsl(0,0%,10%)]/50"}`}>
+        Complete set. {duration === "half" ? "Half day 3-4h" : "Full day 5-8h"}.
+      </p>
+
+      {/* Product Rows */}
+      <div className={`flex-1 border-t mb-8 pt-6 space-y-5 ${tier.featured ? "border-white/10" : "border-[hsl(0,0%,10%)]/10"}`}>
+        {tier.rows.map((row, i) => (
+          <div key={i} className="flex items-start justify-between gap-4">
+            <div>
+              <p className={`text-[14px] font-bold ${tier.featured ? "text-white" : "text-[hsl(0,0%,10%)]"}`}>{row.product}</p>
+              <p className={`text-[13px] mt-1 ${tier.featured ? "text-white/70" : "text-[hsl(0,0%,10%)]/60"}`}>{row.note}</p>
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.span key={duration + i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className={`text-[21px] font-black flex-shrink-0 ${tier.featured ? "text-white" : "text-[hsl(0,0%,10%)]"}`}>
+                {duration === "half" ? row.half : row.full}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+        ))}
+      </div>
+
+      {/* CTA Button */}
+      <button
+        onClick={onBook}
+        className={`w-full py-4 text-[11px] uppercase tracking-[0.12em] font-black rounded-none transition-all ${
+          tier.featured
+            ? "bg-[hsl(186,100%,42%)] text-white hover:brightness-110"
+            : "bg-[hsl(0,0%,10%)] text-white hover:bg-[hsl(0,0%,10%)]/80"
+        }`}
+      >
+        Reserve Gear
+      </button>
     </div>
   );
 }
 
 export default function RentalsPage() {
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [duration,    setDuration]    = useState<Duration>("half");
-  const [activeCard,  setActiveCard]  = useState(1); // start on featured (Premium)
+  const [duration, setDuration] = useState<Duration>("half");
 
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[65vh] md:min-h-[75vh] overflow-hidden flex items-center justify-center text-center">
-        <img src={rentalsHero.src} alt="Kitesurfing equipment rentals at Atlantis Beach, Bonaire" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#051228E0] via-[#05122859] to-[#05122833]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#051228EB] to-transparent h-[55%] mt-auto" />
-        <div className="relative z-10 px-6 sm:px-10 max-w-4xl mx-auto w-full text-center">
+      <section className="relative min-h-[65vh] md:min-h-[75vh] overflow-hidden flex items-center justify-center">
+        <video 
+          src="/videos/hero_hyperlapse3.mp4" 
+          autoPlay 
+          muted 
+          loop 
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(5,18,40,0.3)] via-[rgba(5,18,40,0.5)] to-[rgba(5,18,40,0.8)]" />
+
+        <div className="relative z-10 px-8 sm:px-14 lg:px-20 max-w-4xl mx-auto w-full text-center">
           <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.p variants={fadeUp} className="category-label mb-8 block text-accent">Premium gear. No luggage needed.</motion.p>
-            <motion.h1 variants={fadeUp} className="font-display font-black text-white uppercase tracking-tighter mb-6 text-[clamp(40px,8vw,120px)] leading-[0.87]">Ride the Best<br />Gear on Bonaire</motion.h1>
-            <motion.p variants={fadeUp} className="text-white/70 font-body text-sm md:text-base uppercase tracking-[0.22em] mb-12 mx-auto max-w-[400px]">No luggage. No stress. Just wind and water.</motion.p>
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-4 justify-center">
-              <a href="#pricing" className="btn-cyan text-base">View Pricing</a>
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base">Ask Us Anything</a>
+            <motion.p variants={fadeUp} className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-6 block">
+              Gear for your Bonaire sessions
+            </motion.p>
+            <motion.h1 variants={fadeUp} className="font-black text-white uppercase tracking-tighter mb-6 text-[clamp(40px,7vw,100px)] leading-[0.88]">
+              Ride With Us
+            </motion.h1>
+            <motion.p variants={fadeUp} className="text-white/75 text-[15px] leading-[1.6] mb-10 mx-auto max-w-[500px]">
+              Travel light. We handle everything. You focus on the water, the wind, the ocean. We take care of the rest.
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button onClick={() => setBookingOpen(true)} className="bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
+                Reserve Now
+              </button>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-2 border-white text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:bg-white/10 transition-all"
+              >
+                Ask Us
+              </a>
             </motion.div>
           </motion.div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-accent" />
       </section>
 
-      {/* ── STATEMENT ────────────────────────────────────────────────── */}
-      <section className="bg-background py-12 md:py-16">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-            <div>
-              <p className="category-label mb-3">Show up. Ride. Leave the rest to us.</p>
-              <h2 className="font-display font-black text-foreground uppercase tracking-tighter text-[clamp(22px,4vw,52px)] leading-[0.88]">No shipping. No baggage fees.<br />No wasted sessions.</h2>
-            </div>
-            <a href="#pricing" className="btn-outline-dark text-sm self-start md:self-auto flex-shrink-0">See Pricing</a>
-          </div>
-        </div>
-      </section>
+      {/* ── THIS IS OUR HOME (SPLIT LAYOUT) ──────────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 0, background: SAND }}>
+        {/* Photo Left */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="relative overflow-hidden"
+          style={{ minHeight: "clamp(380px,50vw,600px)" }}
+        >
+          <img
+            src={lessonAction.src}
+            alt="Kiteboarding equipment ready for rental"
+            className="w-full h-full object-cover transition-transform duration-700"
+          />
+        </motion.div>
+
+        {/* Text Right */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="flex flex-col justify-center p-8 md:p-12 lg:p-16"
+          style={{ minHeight: "clamp(380px,50vw,600px)" }}
+        >
+          <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-5" style={{ color: CYAN }}>
+            Our home
+          </p>
+          <h2
+            className="font-black uppercase"
+            style={{
+              fontSize: "clamp(32px,4.5vw,60px)",
+              lineHeight: 0.88,
+              letterSpacing: "-0.03em",
+              marginBottom: 24,
+              color: INK,
+            }}
+          >
+            This is where<br />we belong
+          </h2>
+          <p
+            className="font-body leading-relaxed"
+            style={{
+              fontSize: 15,
+              color: "rgba(0,0,0,0.75)",
+              lineHeight: 1.7,
+            }}
+          >
+            Bring your passion for the water. We bring the gear, the guidance, and our crew. Everything you need to feel the ocean like we do. This is our home, and we want it to be yours too.
+          </p>
+        </motion.div>
+      </div>
 
       {/* ── WHO CAN RENT ─────────────────────────────────────────────── */}
-      <section style={{ background: NAVY_DEEP }} className="py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.p variants={fadeUp} className="category-label mb-6 block text-accent">Who can rent?</motion.p>
-            <motion.h2 variants={fadeUp} className="font-display font-black text-white uppercase tracking-tighter mb-16 text-[clamp(32px,5vw,72px)] leading-[0.87]">Rentals are for<br />competent riders only</motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-white/10">
+      <section className="py-20 md:py-28 relative overflow-hidden">
+        <img
+          src={rentalsHero.src}
+          alt="Kitesurfing equipment at Atlantis Beach"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(21,40,70,0.75)] via-[rgba(21,40,70,0.82)] to-[rgba(21,40,70,0.88)]" />
+
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20 relative z-10">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly}>
+            <div className="mb-12">
+              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-4">Who can rent?</p>
+              <h2 className="text-[clamp(32px,4.5vw,60px)] font-black text-white uppercase tracking-tighter leading-[0.88]">We want everyone to ride</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { label: "IKO Card (Level 4+)", title: "Show us your card",     desc: "You're on the water immediately. No assessment needed." },
-                { label: "Can ride upwind",     title: "Free beach assessment", desc: "20 minutes on the beach with one of our team. If you can ride, you rent." },
-                { label: "Still learning?",     title: "Book a lesson first",   desc: "Come back after your course and get a rental discount on your next visit." },
-              ].map((path, i) => (
-                <div key={i} className={`pt-8 pb-10 md:pr-8 ${i > 0 ? "md:border-l md:border-white/10 md:pl-8" : ""}`}>
-                  <p className="category-label mb-3">{path.label}</p>
-                  <h3 className="font-display font-black text-xl text-white uppercase tracking-tighter mb-3">{path.title}</h3>
-                  <p className="text-white/70 font-body text-sm leading-relaxed">{path.desc}</p>
+                { label: "IKO Card Level 4+", title: "Show us your card", desc: "You are on the water immediately. No assessment needed. Your card says you are ready, we trust that." },
+                { label: "Can ride upwind", title: "Free beach assessment", desc: "Twenty minutes with one of us. If you can ride, you rent. We are not gatekeepers, we just want to make sure it is real." },
+                { label: "Still learning?", title: "Book a lesson first", desc: "Come back after your course. You will be ready then, and we will give you a discount on your rental because you trained with us." },
+              ].map((item, i) => (
+                <div key={i} className="bg-white rounded-[12px] p-8 md:p-10 flex flex-col" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+                  <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-3">{item.label}</p>
+                  <h3 className="text-[clamp(28px,3.8vw,48px)] font-black text-[hsl(0,0%,10%)] uppercase tracking-tighter leading-[0.88] mb-4">{item.title}</h3>
+                  <p className="text-[15px] text-[hsl(0,0%,10%)]/75 leading-[1.6]">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -138,115 +328,123 @@ export default function RentalsPage() {
       </section>
 
       {/* ── PRICING ──────────────────────────────────────────────────── */}
-      <motion.section id="pricing" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="py-20 md:py-28 bg-background">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <motion.div variants={fadeUp} className="mb-10 text-center">
-            <p className="category-label mb-4 block">Transparent pricing. No hidden fees.</p>
-            <h2 className="font-display font-black text-foreground uppercase tracking-tighter text-[clamp(36px,6vw,72px)] leading-[0.87]">Choose Your Gear</h2>
-          </motion.div>
-          <motion.div variants={fadeUp} className="flex justify-center mb-12">
-            <div className="inline-flex border-2 border-foreground bg-background p-0.5">
-              <button onClick={() => setDuration("half")} className={`px-5 py-3 sm:px-7 sm:py-3 text-[10px] sm:text-xs font-display font-black uppercase tracking-widest transition-all duration-300 ${duration === "half" ? "bg-foreground text-background" : "text-foreground/50 hover:bg-foreground/5 hover:text-foreground"}`}>Half Day (3-4h)</button>
-              <button onClick={() => setDuration("full")} className={`px-5 py-3 sm:px-7 sm:py-3 text-[10px] sm:text-xs font-display font-black uppercase tracking-widest transition-all duration-300 ${duration === "full" ? "bg-foreground text-background" : "text-foreground/50 hover:bg-foreground/5 hover:text-foreground"}`}>Full Day (5-8h)</button>
+      <section id="pricing" className="py-20 md:py-28 bg-[hsl(42,35%,97%)]">
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly} className="mb-12">
+            <div className="text-center mb-10">
+              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-4">Transparent pricing</p>
+              <h2 className="text-[clamp(32px,4.5vw,60px)] font-black text-[hsl(0,0%,10%)] uppercase tracking-tighter leading-[0.88]">Choose what works for you</h2>
             </div>
-          </motion.div>
 
-          {/* Desktop tier cards */}
-          <div className="hidden md:grid md:grid-cols-3 gap-0 pb-16 items-stretch">
-            {tiers.map((tier, i) => (
-              <div key={i} className="flex w-full h-full pt-6">
-                <TierCard tier={tier} duration={duration} onBook={() => setBookingOpen(true)} />
+            {/* Duration Toggle */}
+            <div className="mb-12 flex justify-center">
+              <div className="inline-flex flex-col gap-4 px-8 py-6 rounded-[12px]" style={{ background: "#fff", boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+                <p className="text-center font-black uppercase tracking-[0.12em]" style={{ fontSize: 11, color: "rgba(0,0,0,0.55)" }}>
+                  Session length
+                </p>
+                <ToggleSwitch leftLabel="Half Day (3-4h)" rightLabel="Full Day (5-8h)" value={duration === "full"} onChange={v => setDuration(v ? "full" : "half")} />
               </div>
+            </div>
+          </motion.div>
+
+          {/* Tier Cards Grid */}
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly} className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-6">
+            {tiers.map((tier, i) => (
+              <TierCard key={i} tier={tier} duration={duration} onBook={() => setBookingOpen(true)} />
             ))}
-          </div>
+          </motion.div>
 
-          {/* Mobile tier cards with arrows + dots */}
-          <div className="md:hidden pb-6">
-            <div className="relative pt-6">
-              <AnimatePresence mode="wait">
-                <motion.div key={`${duration}-${activeCard}`} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.25 }} className="px-1">
-                  <TierCard tier={tiers[activeCard]} duration={duration} onBook={() => setBookingOpen(true)} />
-                </motion.div>
-              </AnimatePresence>
-              <button onClick={() => setActiveCard((c) => (c - 1 + tiers.length) % tiers.length)} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-8 h-8 bg-foreground text-background flex items-center justify-center z-10" aria-label="Previous tier">
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button onClick={() => setActiveCard((c) => (c + 1) % tiers.length)} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-8 h-8 bg-foreground text-background flex items-center justify-center z-10" aria-label="Next tier">
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-            <div className="flex justify-center gap-2 mt-5">
-              {tiers.map((_, i) => (
-                <button key={i} onClick={() => setActiveCard(i)} className={`transition-all duration-300 ${i === activeCard ? "w-6 h-2 bg-accent" : "w-2 h-2 bg-foreground/30"}`} aria-label={`Tier ${i + 1}`} />
-              ))}
-            </div>
-            <p className="text-center text-foreground/50 font-body text-xs mt-3 uppercase tracking-widest">{activeCard + 1} of {tiers.length}</p>
-          </div>
-
-          <motion.p variants={fadeUp} className="text-xs text-foreground/60 font-body mt-2 text-center max-w-2xl mx-auto">
-            Free kite swap included every session. Foil rental requires a brief beach assessment.
+          <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly} className="text-[13px] text-[hsl(0,0%,10%)]/60 text-center">
+            Free kite swap included every session. Foil rental requires a quick beach assessment.
           </motion.p>
         </div>
-      </motion.section>
+      </section>
 
       {/* ── SESSION BUNDLES ───────────────────────────────────────────── */}
-      <section style={{ background: NAVY_DEEP }} className="py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.p variants={fadeUp} className="category-label mb-4 block text-accent text-center">Book multiple sessions and save</motion.p>
-            <motion.h2 variants={fadeUp} className="font-display font-black text-white uppercase tracking-tighter text-center mb-4 text-[clamp(28px,4vw,56px)] leading-[0.9]">Session Bundles</motion.h2>
-            <motion.p variants={fadeUp} className="text-white/70 font-body text-sm text-center mb-12">Based on half-day complete set rate. Use them flexibly across your stay.</motion.p>
-            <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-0 border-2 border-white/20">
+      <section className="py-20 md:py-28 relative overflow-hidden">
+        <img
+          src={beachSetup.src}
+          alt="Kitesurfing at Atlantis Beach"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(21,40,70,0.75)] via-[rgba(21,40,70,0.82)] to-[rgba(21,40,70,0.88)]" />
+
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20 relative z-10">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly}>
+            <div className="text-center mb-12">
+              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-4">Stay longer, go deeper</p>
+              <h2 className="text-[clamp(32px,4.5vw,60px)] font-black text-white uppercase tracking-tighter leading-[0.88] mb-4">Session bundles</h2>
+              <p className="text-white/75 text-[15px] leading-[1.6]">The more time you spend here, the deeper it gets. Join our crew.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
               {bundles.map((bundle, i) => (
-                <div key={i} className={`p-6 md:p-8 text-center relative ${i < bundles.length - 1 ? "border-b-2 md:border-b-0 md:border-r-2 border-white/20" : ""}`} style={{ background: bundle.popular || bundle.best ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.03)" }}>
-                  {(bundle.popular || bundle.best) && (
-                    <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white font-display font-black text-[10px] sm:text-xs uppercase tracking-widest px-3 py-1 whitespace-nowrap z-10">
-                      {bundle.popular ? "Popular" : "Best Value"}
-                    </span>
+                <div key={i} className="bg-white rounded-[12px] p-6 md:p-8 text-center relative flex flex-col" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+                  {bundle.best && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[hsl(186,100%,42%)] text-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] rounded-none">
+                      Best value
+                    </div>
                   )}
-                  <p className="font-display font-black text-xs uppercase tracking-widest mb-3 mt-2 text-white/70">{bundle.sessions}</p>
-                  <p className="text-3xl md:text-5xl font-display font-black mb-1 text-white">{bundle.price}</p>
-                  <p className="text-xs font-body text-white/70">{bundle.per}</p>
-                  {bundle.savings && <p className="text-accent text-xs font-bold uppercase tracking-wider mt-4">{bundle.savings}</p>}
+                  <p className="text-[11px] uppercase tracking-[0.12em] font-bold text-[hsl(0,0%,10%)]/55 mb-3 mt-2">{bundle.sessions}</p>
+                  <p className="text-[clamp(32px,4.5vw,60px)] font-black text-[hsl(0,0%,10%)] leading-none mb-1">{bundle.price}</p>
+                  <p className="text-[13px] text-[hsl(0,0%,10%)]/60 mb-3">{bundle.per}</p>
+                  {bundle.savings && <p className="text-[hsl(186,100%,42%)] text-[11px] font-black uppercase tracking-[0.12em]">{bundle.savings}</p>}
                 </div>
               ))}
-            </motion.div>
-            <motion.div variants={fadeUp} className="mt-10 text-center">
-              <button onClick={() => setBookingOpen(true)} className="btn-cyan text-base inline-block">Book a Bundle</button>
-            </motion.div>
+            </div>
+
+            <div className="text-center">
+              <button onClick={() => setBookingOpen(true)} className="bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
+                Book a Bundle
+              </button>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* ── USPs ─────────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 bg-background">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-0 border-2 border-foreground">
-            <motion.div variants={fadeUp} className="p-10 md:p-14 md:border-r-2 border-foreground">
-              <p className="category-label mb-5">Free with every session</p>
-              <h3 className="font-display font-black text-foreground uppercase tracking-tighter mb-4 text-[clamp(24px,3vw,40px)] leading-[0.9]">Free Kite Swap</h3>
-              <p className="text-foreground/70 font-body text-base leading-relaxed mb-6">Wind picking up? Dropped? We swap your kite size for free during your session. No charge, no questions asked.</p>
-              <p className="text-accent font-display font-black text-xs uppercase tracking-widest">Most schools charge for this. We don't.</p>
-            </motion.div>
-            <motion.div variants={fadeUp} className="p-10 md:p-14 border-t-2 md:border-t-0 border-foreground">
-              <p className="category-label mb-5">Rental credit</p>
-              <h3 className="font-display font-black text-foreground uppercase tracking-tighter mb-4 text-[clamp(24px,3vw,40px)] leading-[0.9]">Try Before You Buy</h3>
-              <p className="text-foreground/70 font-body text-base leading-relaxed mb-6">Love the gear you rented? We deduct your last rental session from the purchase price. Ask us about current stock on the beach.</p>
-              <p className="text-accent font-display font-black text-xs uppercase tracking-widest">Rental credit applied to purchase.</p>
-            </motion.div>
+      <section className="py-20 md:py-28 bg-[hsl(42,35%,97%)]">
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-[12px] p-8 md:p-10" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-6">Every session, included</p>
+              <h3 className="text-[clamp(28px,3.8vw,48px)] font-black text-[hsl(0,0%,10%)] uppercase tracking-tighter leading-[0.88] mb-4">Free kite swap</h3>
+              <p className="text-[15px] text-[hsl(0,0%,10%)]/75 leading-[1.6]">
+                Wind picks up? Wind dies? We swap your kite for free during your session. No charge, no questions. You focus on the ride, we handle the details.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-[12px] p-8 md:p-10" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-6">Fall in love with it</p>
+              <h3 className="text-[clamp(28px,3.8vw,48px)] font-black text-[hsl(0,0%,10%)] uppercase tracking-tighter leading-[0.88] mb-4">Try before you buy</h3>
+              <p className="text-[15px] text-[hsl(0,0%,10%)]/75 leading-[1.6]">
+                Love the gear you rented? We deduct your last rental session from the purchase price. Ask us on the beach about what we have in stock. We want you to own what you love.
+              </p>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 bg-primary text-center">
-        <div className="max-w-3xl mx-auto px-6">
-          <h2 className="font-display font-black text-white uppercase tracking-tighter mb-4 text-[clamp(40px,7vw,96px)] leading-[0.88]">Ready to Ride?</h2>
-          <p className="text-white/70 font-body mb-10 uppercase tracking-[0.2em] text-sm">Reserve your gear. Hit the water tomorrow.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={() => setBookingOpen(true)} className="btn-cyan text-base">Reserve Your Gear</button>
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="btn-outline-white text-base">WhatsApp Us</a>
-          </div>
+      {/* ── FINAL CTA ────────────────────────────────────────────────── */}
+      <section className="py-20 md:py-28 bg-[hsl(213,85%,38%)] text-center">
+        <div className="max-w-3xl mx-auto px-8 sm:px-14 lg:px-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly}>
+            <h2 className="text-[clamp(52px,9vw,120px)] font-black text-white uppercase tracking-tighter leading-[0.88] mb-6">Ready?</h2>
+            <p className="text-white/75 text-[15px] leading-[1.6] uppercase tracking-[0.12em] mb-10">Reserve your gear. See you on the beach tomorrow.</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button onClick={() => setBookingOpen(true)} className="bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
+                Reserve Your Gear
+              </button>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border-2 border-white text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:bg-white/10 transition-all"
+              >
+                WhatsApp Us
+              </a>
+            </div>
+          </motion.div>
         </div>
       </section>
 

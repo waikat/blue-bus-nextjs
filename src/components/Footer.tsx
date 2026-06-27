@@ -25,9 +25,18 @@ function YoutubeIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-const NAVY = "hsl(211,100%,12%)";
-const CYAN = "hsl(186,100%,42%)";
+const NAVY     = "hsl(213,85%,28%)";
+const CYAN     = "hsl(186,100%,42%)";
 const WHATSAPP = "https://wa.me/5997015483?text=Hi!%20I'd%20like%20to%20know%20more%20about%20kite%20lessons%20in%20Bonaire";
+
+const exploreLinks = [
+  { label: "Lessons",   href: "/lessons"  },
+  { label: "Rentals",   href: "/rentals"  },
+  { label: "Trips",     href: "/trips"    },
+  { label: "Live wind", href: "/forecast" },
+  { label: "About",     href: "/about"    },
+  { label: "FAQ",       href: "/info"     },
+];
 
 export default function Footer() {
   return (
@@ -35,18 +44,21 @@ export default function Footer() {
 
       {/* Ghost wordmark */}
       <div className="absolute -bottom-16 -left-6 select-none pointer-events-none" aria-hidden>
-        <span className="font-display font-black uppercase block"
-          style={{ fontSize: "clamp(180px,30vw,460px)", color: "rgba(255,255,255,0.025)", lineHeight: 0.82, letterSpacing: "-0.04em" }}>
+        <span
+          className="font-display font-black uppercase block"
+          style={{ fontSize: "clamp(180px,30vw,460px)", color: "rgba(255,255,255,0.03)", lineHeight: 0.82, letterSpacing: "-0.04em" }}
+        >
           KB
         </span>
       </div>
 
       <div className="relative px-8 sm:px-14 lg:px-20 xl:px-28 pt-24 md:pt-32 pb-12">
 
-        {/* ── Top: statement + CTAs — no arrows ─────────────────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 pb-16 md:pb-20"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.10)" }}>
-
+        {/* Top: statement + CTAs */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 pb-16 md:pb-20"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.12)" }}
+        >
           <div className="md:col-span-7">
             <p className="font-display font-black uppercase mb-5"
               style={{ color: CYAN, fontSize: 11, letterSpacing: "0.18em" }}>
@@ -59,24 +71,29 @@ export default function Footer() {
           </div>
 
           <div className="md:col-span-5 flex flex-col justify-end gap-3">
-            {/* No arrows — site-wide rule */}
-            <a href={WHATSAPP} target="_blank" rel="noopener noreferrer"
+            <a
+              href={WHATSAPP}
+              target="_blank"
+              rel="noopener noreferrer"
               className="font-display font-black uppercase tracking-widest px-7 py-5 text-center transition-opacity hover:opacity-90"
-              style={{ background: CYAN, color: "#fff", fontSize: 13 }}>
+              style={{ background: CYAN, color: "#fff", fontSize: 13 }}
+            >
               WhatsApp us
             </a>
-            <Link href="/lessons"
+            <Link
+              href="/lessons"
               className="font-display font-black uppercase tracking-widest px-7 py-5 text-center transition-colors hover:bg-white/5"
-              style={{ border: "1.5px solid rgba(255,255,255,0.35)", color: "#fff", fontSize: 13 }}>
+              style={{ border: "1.5px solid rgba(255,255,255,0.35)", color: "#fff", fontSize: 13 }}
+            >
               Book a lesson
             </Link>
           </div>
         </div>
 
-        {/* ── Middle: info row ───────────────────────────────────────────── */}
+        {/* Middle: info row */}
         <div className="grid grid-cols-2 md:grid-cols-12 gap-10 md:gap-8 py-16">
 
-          {/* Brand + social + live wind widget */}
+          {/* Brand + social + wind card */}
           <div className="col-span-2 md:col-span-4">
             <p className="font-display font-black uppercase text-white mb-3"
               style={{ fontSize: 14, letterSpacing: "0.04em" }}>
@@ -86,11 +103,10 @@ export default function Footer() {
               style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.7 }}>
               Bonaire&rsquo;s original kite school. Since 2001. Atlantis Beach.
             </p>
-
             <div className="flex items-center gap-5 mb-8">
               {[
                 { Icon: InstagramIcon, href: "https://instagram.com/kiteboardingbonaire", label: "Instagram" },
-                { Icon: YoutubeIcon,   href: "#", label: "YouTube" },
+                { Icon: YoutubeIcon,   href: "#",                                         label: "YouTube"   },
               ].map(({ Icon, href, label }, i) => (
                 <a key={i} href={href} target="_blank" rel="noopener noreferrer"
                   aria-label={label} className="text-white/75 hover:text-white transition-colors">
@@ -98,8 +114,6 @@ export default function Footer() {
                 </a>
               ))}
             </div>
-
-            {/* Live wind — Apple widget card */}
             <WindCard />
           </div>
 
@@ -110,14 +124,7 @@ export default function Footer() {
               Explore
             </p>
             <ul className="flex flex-col gap-3">
-              {[
-                { label: "Lessons",   href: "/lessons" },
-                { label: "Rentals",   href: "/rentals" },
-                { label: "Trips",     href: "/trips" },
-                { label: "Live wind", href: "/wind" },
-                { label: "About",     href: "/about" },
-                { label: "FAQ",       href: "/info" },
-              ].map((l) => (
+              {exploreLinks.map((l) => (
                 <li key={l.label}>
                   <Link href={l.href}
                     className="font-body transition-colors hover:text-white"
@@ -176,27 +183,28 @@ export default function Footer() {
               style={{ fontSize: 14, color: "rgba(255,255,255,0.75)", lineHeight: 1.6 }}>
               Trip dates, last-minute openings, swell calls.
             </p>
-            <form className="flex flex-col gap-2.5"
-              onSubmit={(e) => { e.preventDefault(); }}>
+            <form className="flex flex-col gap-2.5" onSubmit={(e) => e.preventDefault()}>
               <input
                 type="email"
                 placeholder="your@email.com"
                 aria-label="Email address"
                 className="px-4 py-3.5 font-body bg-transparent text-white placeholder-white/40 focus:outline-none focus:border-white/60 transition-colors"
-                style={{ border: "1px solid rgba(255,255,255,0.25)", fontSize: 14 }}
+                style={{ border: "1px solid rgba(255,255,255,0.25)", fontSize: 14, borderRadius: 8 }}
               />
               <button type="submit"
                 className="font-display font-black uppercase tracking-widest py-3.5 transition-opacity hover:opacity-90"
-                style={{ background: "#fff", color: NAVY, fontSize: 11 }}>
+                style={{ background: "#fff", color: NAVY, fontSize: 11, borderRadius: 0 }}>
                 Subscribe
               </button>
             </form>
           </div>
         </div>
 
-        {/* ── Bottom strip ───────────────────────────────────────────────── */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-10"
-          style={{ borderTop: "1px solid rgba(255,255,255,0.10)" }}>
+        {/* Bottom strip */}
+        <div
+          className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-10"
+          style={{ borderTop: "1px solid rgba(255,255,255,0.12)" }}
+        >
           <p className="font-body" style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>
             © 2026 Kiteboarding Bonaire · Wind permitting, always.
           </p>
