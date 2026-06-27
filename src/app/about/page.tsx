@@ -1,5 +1,4 @@
 "use client";
-
 import { motion } from "framer-motion";
 import Link from "next/link";
 import aboutHero from "@/assets/About-us.jpg";
@@ -11,41 +10,24 @@ import instructor3 from "@/assets/instructor-3.jpg";
 import instructor4 from "@/assets/instructor-4.jpg";
 import communityPhoto from "@/assets/community-photo.jpg";
 import beachSetup from "@/assets/beach-setup.jpg";
-
 const OCEAN = "hsl(213,85%,38%)";
 const OCEAN_DEEP = "hsl(213,85%,22%)";
 const CYAN = "hsl(186,100%,42%)";
 const SAND = "hsl(42,35%,97%)";
 const INK = "hsl(0,0%,10%)";
-
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
 const fadeInOnly = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } };
-
 const people = [
-  {
-    name: "Rommel Rivas",
-    role: "Owner, The Blue Bus",
-    bio: "Kiter, Venezuelan, Bonaire local. He took the keys of the Blue Bus in 2016 and never looked back. First one on the beach, last one to leave.",
-    photo: rommelPhoto.src,
-    dark: true,
-  },
-  {
-    name: "Carlos Lilue",
-    role: "Operations",
-    bio: "The one who makes the beach happen every day. Bus, boat, tents, chairs. Carlos sets up the world so everyone else can enjoy it.",
-    photo: carlosPhoto.src,
-    dark: false,
-  },
+  { name: "Rommel Rivas", role: "Owner, The Blue Bus", bio: "Kiter, Venezuelan, Bonaire local. He took the keys of the Blue Bus in 2016 and never looked back. First one on the beach, last one to leave.", photo: rommelPhoto.src, dark: true },
+  { name: "Carlos Lilue", role: "Operations", bio: "The one who makes the beach happen every day. Bus, boat, tents, chairs. Carlos sets up the world so everyone else can enjoy it.", photo: carlosPhoto.src, dark: false },
 ];
-
 const instructors = [
   { name: "Linda", photo: instructor1.src },
   { name: "Can", photo: instructor2.src },
   { name: "Jaco", photo: instructor3.src },
   { name: "Andre", photo: instructor4.src },
 ];
-
 export default function AboutPage() {
   return (
     <div style={{ background: SAND }} className="min-h-screen">
@@ -64,7 +46,6 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </section>
-
       <section className="py-20 md:py-28" style={{ background: OCEAN_DEEP }}>
         <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
@@ -83,7 +64,6 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </section>
-
       <section className="py-20 md:py-28" style={{ background: SAND }}>
         <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
@@ -108,11 +88,9 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </section>
-
       <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="overflow-hidden" style={{ height: "clamp(280px, 45vw, 560px)" }}>
         <img src={communityPhoto.src} alt="KBB Community at Atlantis Beach" className="w-full h-full object-cover" />
       </motion.div>
-
       <section className="py-20 md:py-28" style={{ background: SAND }}>
         <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
@@ -163,7 +141,6 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </section>
-
       <section className="py-20 md:py-28 text-center" style={{ background: OCEAN }}>
         <div className="max-w-3xl mx-auto px-8 sm:px-14 lg:px-20">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
