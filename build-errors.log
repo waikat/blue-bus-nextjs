@@ -1,0 +1,32 @@
+
+> blue-bus-nextjs@0.1.0 build
+> next build
+
+▲ Next.js 16.2.3 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1445ms
+  Running TypeScript ...
+Failed to type check.
+
+./src/app/about/page.tsx:64:23
+Type error: Type '{ hidden: { opacity: number; y: number; }; visible: { opacity: number; y: number; transition: { duration: number; ease: string; }; }; }' is not assignable to type 'Variants'.
+  Property 'visible' is incompatible with index signature.
+    Type '{ opacity: number; y: number; transition: { duration: number; ease: string; }; }' is not assignable to type 'Variant'.
+      Type '{ opacity: number; y: number; transition: { duration: number; ease: string; }; }' is not assignable to type 'TargetAndTransition'.
+        Type '{ opacity: number; y: number; transition: { duration: number; ease: string; }; }' is not assignable to type '{ transition?: Transition<any> | undefined; transitionEnd?: ResolvedValues$1 | undefined; }'.
+          Types of property 'transition' are incompatible.
+            Type '{ duration: number; ease: string; }' is not assignable to type 'Transition<any> | undefined'.
+              Type '{ duration: number; ease: string; }' is not assignable to type 'TransitionWithValueOverrides<any>'.
+                Type '{ duration: number; ease: string; }' is not assignable to type 'ValueAnimationTransition<any>'.
+                  Types of property 'ease' are incompatible.
+                    Type 'string' is not assignable to type 'Easing | Easing[] | undefined'.
+
+  [90m62 |[0m         <div className=[32m"relative z-10 w-full px-8 sm:px-14 lg:px-20 pb-16 md:pb-24"[0m>
+  [90m63 |[0m           <motion.div initial=[32m"hidden"[0m animate=[32m"visible"[0m variants={stagger}>
+[31m[1m>[0m [90m64 |[0m             <motion.p variants={fadeUp} className=[32m"font-display font-black uppercase track...[0m
+  [90m   |[0m                       [31m[1m^[0m
+  [90m65 |[0m               [33mEst[0m. [35m2001[0m, [33mBonaire[0m
+  [90m66 |[0m             </motion.p>
+  [90m67 |[0m             <motion.h1
+Next.js build worker exited with code: 1 and signal: null
