@@ -207,77 +207,74 @@ function PkgCard({ pkg, onBook }: { pkg: Pkg; onBook: () => void }) {
   );
 }
 
-function ToggleSwitch({
-  leftLabel, rightLabel,
-  leftSub,   rightSub,
-  value,     onChange,
+function SegmentedControl({
+  options,
+  value,
+  onChange,
 }: {
-  leftLabel: string; rightLabel: string;
-  leftSub?:  string; rightSub?:  string;
-  value:     boolean;
-  onChange:  (v: boolean) => void;
+  options: { label: string; value: string }[];
+  value: string;
+  onChange: (v: string) => void;
 }) {
   return (
-    <div className="flex items-center justify-center gap-4">
-      {/* Left label */}
-      <button onClick={() => onChange(false)}
-        className="text-right transition-all duration-200"
-        style={{ minWidth: 100 }}>
-        <span className="font-display font-black uppercase tracking-widest block transition-colors duration-200"
-          style={{ fontSize: 12, color: !value ? INK : "rgba(0,0,0,0.35)" }}>
-          {leftLabel}
-        </span>
-        {leftSub && (
-          <span className="font-body block mt-0.5 transition-colors duration-200"
-            style={{ fontSize: 12, color: !value ? "rgba(0,0,0,0.55)" : "rgba(0,0,0,0.28)" }}>
-            {leftSub}
-          </span>
-        )}
-      </button>
-
-      {/* Toggle track — smaller, tighter */}
-      <button
-        onClick={() => onChange(!value)}
-        aria-pressed={value}
-        className="flex-shrink-0 relative transition-colors duration-300"
-        style={{
-          width:        50,
-          height:       28,
-          borderRadius: 4,
-          background:   value ? CYAN : OCEAN,
-          border:       "none",
-          cursor:       "pointer",
-          outline:      "none",
-        }}>
-        {/* Thumb */}
-        <div className="absolute"
+    <div className="flex overflow-hidden" style={{ border: `1.5px solid ${OCEAN}`, borderRadius: 0 }}>
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          className="flex-1 font-display font-black uppercase tracking-widest py-3.5 transition-all duration-200"
           style={{
-            top:          3,
-            left:         value ? 26 : 3,
-            width:        22,
-            height:       22,
-            borderRadius: 2,
-            background:   "#fff",
-            boxShadow:    "0 2px 6px rgba(0,0,0,0.25)",
-            transition:   "left 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          }} />
-      </button>
+            fontSize: 11,
+            background: value === opt.value ? OCEAN : "transparent",
+            color: value === opt.value ? "#fff" : INK,
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
 
-      {/* Right label */}
-      <button onClick={() => onChange(true)}
-        className="text-left transition-all duration-200"
-        style={{ minWidth: 100 }}>
-        <span className="font-display font-black uppercase tracking-widest block transition-colors duration-200"
-          style={{ fontSize: 12, color: value ? INK : "rgba(0,0,0,0.35)" }}>
-          {rightLabel}
-        </span>
-        {rightSub && (
-          <span className="font-body block mt-0.5 transition-colors duration-200"
-            style={{ fontSize: 12, color: value ? "rgba(0,0,0,0.55)" : "rgba(0,0,0,0.28)" }}>
-            {rightSub}
-          </span>
+function MobilePkgCard({ pkg, onBook }: { pkg: Pkg; onBook: () => void }) {
+  return (
+    <div className="flex overflow-hidden rounded-[12px] bg-white"
+      style={{ boxShadow: pkg.featured
+        ? "0 4px 16px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.05)"
+        : "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+      <div className="flex-shrink-0 w-[110px] overflow-hidden relative">
+        <img src={pkg.photo} alt={pkg.name}
+          className={`w-full h-full object-cover ${pkg.photoPosition ?? "object-center"}`} />
+        {pkg.badge && (
+          <span className="absolute top-2 left-2 font-display font-black uppercase tracking-widest px-2 py-1 text-white"
+            style={{ fontSize: 9, background: CYAN, borderRadius: 0 }}>{pkg.badge}</span>
         )}
-      </button>
+      </div>
+      <div className="flex-1 flex flex-col justify-between py-4 px-4">
+        <div>
+          <p className="font-display font-black uppercase tracking-widest"
+            style={{ fontSize: 10, color: CYAN }}>{pkg.outcome}</p>
+          <p className="font-display font-black uppercase tracking-tight mt-1"
+            style={{ fontSize: 15, color: INK }}>{pkg.name}</p>
+          <p className="font-body mt-1" style={{ fontSize: 12, color: "rgba(0,0,0,0.55)" }}>{pkg.sessions}</p>
+        </div>
+        <div className="flex items-end justify-between mt-3">
+          <div>
+            <span className="font-display font-black"
+              style={{ fontSize: 24, letterSpacing: "-0.03em", color: INK }}>{pkg.price}</span>
+            {pkg.perPerson && (
+              <p className="font-body" style={{ fontSize: 11, color: CYAN, fontWeight: 700 }}>{pkg.perPerson}</p>
+            )}
+          </div>
+          <button onClick={onBook}
+            className="font-display font-black uppercase tracking-widest px-4 py-2.5"
+            style={{ fontSize: 10, background: pkg.featured ? CYAN : OCEAN, color: "#fff", border: "none", borderRadius: 0 }}>
+            Book
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -470,41 +467,19 @@ export default function LessonsPage() {
               </div>
             </motion.div>
 
-            {/* Toggles — inside card for differentiation */}
-            <motion.div variants={fadeIn} className="mb-8 flex justify-center">
-              <div className="inline-flex flex-col gap-4 px-8 py-6"
-                style={{ background: "#fff", boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)", borderRadius: 12 }}>
-                
-                <div className="flex gap-12 justify-center">
-                  {/* Level toggle */}
-                  <div className="flex flex-col items-center gap-2">
-                    <p className="font-body"
-                      style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                      Your level
-                    </p>
-                    <ToggleSwitch
-                      leftLabel="Beginner"
-                      rightLabel="Intermediate"
-                      value={level === "intermediate"}
-                      onChange={v => setLevel(v ? "intermediate" : "beginner")}
-                    />
-                  </div>
-
-                  {/* Format toggle */}
-                  <div className="flex flex-col items-center gap-2">
-                    <p className="font-body"
-                      style={{ fontSize: 11, color: "rgba(0,0,0,0.55)", letterSpacing: "0.12em", textTransform: "uppercase" }}>
-                      Solo or duo
-                    </p>
-                    <ToggleSwitch
-                      leftLabel="Solo"
-                      rightLabel="Duo"
-                      value={format === "duo"}
-                      onChange={v => setFormat(v ? "duo" : "solo")}
-                    />
-                  </div>
-                </div>
-
+            {/* Toggles — segmented pill buttons */}
+            <motion.div variants={fadeIn} className="mb-8">
+              <div className="max-w-md mx-auto flex flex-col gap-3">
+                <SegmentedControl
+                  options={[{ label: "Beginner", value: "beginner" }, { label: "Intermediate", value: "intermediate" }]}
+                  value={level}
+                  onChange={(v) => setLevel(v as "beginner" | "intermediate")}
+                />
+                <SegmentedControl
+                  options={[{ label: "Solo", value: "solo" }, { label: "Duo", value: "duo" }]}
+                  value={format}
+                  onChange={(v) => setFormat(v as "solo" | "duo")}
+                />
               </div>
             </motion.div>
 
@@ -520,12 +495,10 @@ export default function LessonsPage() {
                     <PkgCard key={i} pkg={pkg} onBook={() => setBookingId(pkg.vikingId)} />
                   ))}
                 </div>
-                {/* Mobile: horizontal scroll */}
-                <div className="flex md:hidden overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-8 px-8 hide-scrollbar">
+                {/* Mobile: vertical compact cards */}
+                <div className="flex flex-col md:hidden gap-4">
                   {packages.map((pkg, i) => (
-                    <div key={i} className="flex-shrink-0 snap-center" style={{ width: "85vw" }}>
-                      <PkgCard pkg={pkg} onBook={() => setBookingId(pkg.vikingId)} />
-                    </div>
+                    <MobilePkgCard key={i} pkg={pkg} onBook={() => setBookingId(pkg.vikingId)} />
                   ))}
                 </div>
               </motion.div>

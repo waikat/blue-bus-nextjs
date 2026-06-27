@@ -144,10 +144,27 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
               );
             })}
 
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: navLinks.length * 0.07 }}
+              className="w-full"
+            >
+              <button
+                className={`block w-full text-center py-5 font-display font-black text-3xl uppercase tracking-[0.1em] transition-colors ${
+                  pathname === "/forecast" ? "text-accent" : "text-white"
+                }`}
+                style={{ background: "none", border: "none" }}
+                onClick={() => { setMobileOpen(false); onWeatherClick(); }}
+              >
+                Forecast
+              </button>
+            </motion.div>
+
             <motion.button
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.32 }}
+              transition={{ delay: 0.40 }}
               onClick={() => { setMobileOpen(false); setBookingOpen(true); }}
               className="mt-8 font-display font-black text-lg uppercase tracking-widest px-12 py-5 text-white"
               style={{ background: CYAN }}
@@ -158,7 +175,7 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.48 }}
               className="mt-6 text-white/60"
             >
               <WindWidget onClick={() => { setMobileOpen(false); onWeatherClick(); }} />

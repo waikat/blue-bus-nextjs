@@ -342,7 +342,7 @@ export default function RentalsPage() {
                 <p className="text-center font-black uppercase tracking-[0.12em]" style={{ fontSize: 11, color: "rgba(0,0,0,0.55)" }}>
                   Session length
                 </p>
-                <ToggleSwitch leftLabel="Half Day (3-4h)" rightLabel="Full Day (5-8h)" value={duration === "full"} onChange={v => setDuration(v ? "full" : "half")} />
+                <ToggleSwitch leftLabel="Half Day" rightLabel="Full Day" value={duration === "full"} onChange={v => setDuration(v ? "full" : "half")} />
               </div>
             </div>
           </motion.div>
