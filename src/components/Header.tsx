@@ -150,15 +150,15 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
               transition={{ delay: navLinks.length * 0.07 }}
               className="w-full"
             >
-              <button
+              <Link
+                href="/forecast"
                 className={`block w-full text-center py-5 font-display font-black text-3xl uppercase tracking-[0.1em] transition-colors ${
                   pathname === "/forecast" ? "text-accent" : "text-white"
                 }`}
-                style={{ background: "none", border: "none" }}
-                onClick={() => { setMobileOpen(false); onWeatherClick(); }}
+                onClick={() => setMobileOpen(false)}
               >
                 Forecast
-              </button>
+              </Link>
             </motion.div>
 
             <motion.button
