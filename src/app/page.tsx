@@ -21,7 +21,6 @@ const OCEAN_DEEP = "hsl(213,85%,22%)";
 const CYAN       = "hsl(186,100%,42%)";
 const SAND       = "hsl(42,35%,97%)";
 
-// Hero entrance only — everything else is a simple opacity fade
 const heroReveal = {
   hidden:  { opacity: 0, y: 16 },
   visible: (i: number) => ({
@@ -55,7 +54,6 @@ const testimonials = [
   },
 ];
 
-// 4 reasons to choose KBB
 const WHY_KBB = [
   {
     src:   ikoPhoto.src,
@@ -101,22 +99,29 @@ export default function HomePage() {
           background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.45) 55%, hsla(213,85%,12%,0.80) 78%, hsla(213,85%,22%,0.95) 100%)"
         }} />
         <div className="relative z-10 w-full px-6 sm:px-12 lg:px-20 pb-10 md:pb-16">
-          <motion.h1
+          <motion.p
             custom={0} initial="hidden" animate="visible" variants={heroReveal}
-            className="font-display font-black text-white uppercase"
-            style={{ fontSize: "clamp(52px,9vw,120px)", lineHeight: 0.88, letterSpacing: "-0.02em", marginBottom: "0.2em" }}
+            className="font-display font-black uppercase tracking-widest mb-4"
+            style={{ fontSize: 12, color: CYAN }}
           >
-            THE<br />BLUE BUS
+            Est. 2001, Bonaire
+          </motion.p>
+          <motion.h1
+            custom={1} initial="hidden" animate="visible" variants={heroReveal}
+            className="font-display font-black text-white uppercase"
+            style={{ fontSize: "clamp(36px,6vw,76px)", lineHeight: 0.88, letterSpacing: "-0.03em", marginBottom: "0.15em" }}
+          >
+            Kiteboarding<br />Bonaire
           </motion.h1>
           <motion.p
-            custom={1} initial="hidden" animate="visible" variants={heroReveal}
-            className="font-body uppercase tracking-[0.22em] mb-8 text-xs sm:text-sm"
-            style={{ color: "rgba(255,255,255,0.75)" }}
+            custom={2} initial="hidden" animate="visible" variants={heroReveal}
+            className="font-display font-black uppercase tracking-[0.14em] mb-8"
+            style={{ fontSize: "clamp(18px,2.8vw,28px)", color: "rgba(255,255,255,0.70)" }}
           >
-            Est. 2001 — Bonaire, Caribbean Netherlands
+            The Blue Bus
           </motion.p>
           <motion.div
-            custom={2} initial="hidden" animate="visible" variants={heroReveal}
+            custom={3} initial="hidden" animate="visible" variants={heroReveal}
             className="flex flex-wrap gap-3"
           >
             <button onClick={() => setBookingOpen(true)} className="btn-cyan">
@@ -136,7 +141,6 @@ export default function HomePage() {
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}
             className="grid grid-cols-1 md:grid-cols-12 gap-10 items-start"
           >
-            {/* Left — heading, top-aligned */}
             <div className="md:col-span-7">
               <p className="category-label mb-4">Bonaire&apos;s original kite school</p>
               <h2
@@ -146,8 +150,6 @@ export default function HomePage() {
                 Learn to fly.<br />Find the wind.<br />Keep coming back.
               </h2>
             </div>
-
-            {/* Right — body + stats, top-aligned with left */}
             <div className="md:col-span-5">
               <p
                 className="font-body text-base md:text-lg leading-relaxed mb-10"
@@ -185,7 +187,6 @@ export default function HomePage() {
             alt="Kitesurf lesson at Atlantis Beach Bonaire"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          {/* Soft top fade — bridges from sand above into the photo */}
           <div
             className="absolute top-0 left-0 right-0 pointer-events-none"
             style={{
@@ -193,7 +194,6 @@ export default function HomePage() {
               background: "linear-gradient(to bottom, hsl(42,35%,97%) 0%, rgba(248,246,241,0) 100%)",
             }}
           />
-          {/* Soft bottom fade removed — picture ends clean */}
         </div>
         <div
           className="relative w-full md:w-1/2 flex flex-col justify-center px-8 md:px-14 py-14 md:py-20"
@@ -218,10 +218,9 @@ export default function HomePage() {
         </div>
       </motion.section>
 
-      {/* ── WHY KBB — 3 reasons with photo + label ───────────────────────────── */}
+      {/* ── WHY KBB ──────────────────────────────────────────────────────────── */}
       <section style={{ background: SAND }} className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20">
-
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}
             className="mb-10"
@@ -249,7 +248,6 @@ export default function HomePage() {
                   boxShadow:    "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)",
                 }}
               >
-                {/* Photo with Ocean Blue label bar */}
                 <div className="relative overflow-hidden" style={{ height: 280 }}>
                   <img
                     src={item.src}
@@ -268,7 +266,6 @@ export default function HomePage() {
                     </p>
                   </div>
                 </div>
-                {/* Description */}
                 <div className="px-5 py-5 flex-1">
                   <p
                     className="font-body text-sm leading-relaxed"
@@ -281,7 +278,6 @@ export default function HomePage() {
             ))}
           </motion.div>
 
-          {/* Rentals strip */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mt-14 pt-10 border-t border-black/10">
             <div>
               <p className="category-label mb-2">Also available</p>
@@ -349,7 +345,6 @@ export default function HomePage() {
             </h2>
           </div>
 
-          {/* 4-card grid — 3 reviews + Leave a Review CTA. All equal dimensions. */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {testimonials.map((t, i) => (
               <div
@@ -387,7 +382,6 @@ export default function HomePage() {
               </div>
             ))}
 
-            {/* Leave a Review — matching card, Ocean Blue */}
             <a
               href={GOOGLE_REVIEWS_URL}
               target="_blank"
