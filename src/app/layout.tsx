@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Outfit, Raleway } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/ClientLayout";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -17,6 +18,12 @@ const raleway = Raleway({
 
 const BASE_URL = "https://www.kiteboardingbonaire.com";
 const OG_IMAGE = `${BASE_URL}/og-image.jpg`;
+
+export const viewport: Viewport = {
+  themeColor: "#0e4c8a",
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -72,7 +79,12 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.gif",
     shortcut: "/favicon.gif",
-    apple: "/favicon.gif",
+    apple: "/icons/icon-192.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "KBB Wind",
   },
   alternates: {
     canonical: BASE_URL,
@@ -137,7 +149,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="min-h-screen flex flex-col antialiased">
-        {/* STINAPA bar — sitewide, thin, unobtrusive */}
+        <ServiceWorkerRegistration />
         <div
           className="w-full flex items-center justify-center px-4 py-1.5"
           style={{ background: "hsl(213,85%,30%)", borderBottom: "1px solid rgba(255,255,255,0.10)" }}
