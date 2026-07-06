@@ -21,6 +21,7 @@ import instructor2  from "@/assets/instructor-2.jpg";
 import instructor3  from "@/assets/instructor-3.jpg";
 import instructor4  from "@/assets/instructor-4.jpg";
 import ikoLogo      from "@/assets/iko-center.png";
+import ikoBadge     from "@/assets/iko-affiliated.avif";
 
 // ─── DESIGN SYSTEM ────────────────────────────────────────────────────────────
 // Unified across home, lessons, rentals, trips, about, forecast, info
@@ -511,13 +512,16 @@ export default function LessonsPage() {
                 : "Single sessions also qualify for IKO Level 5 advancement. Tell us before your session."}
             </motion.p>
 
-            {/* IKO — moved to bottom */}
-            <motion.div variants={fadeIn} className="flex items-center justify-center gap-2 mt-6">
-              <img src={ikoLogo.src} alt="IKO Kite Center" className="h-6 w-auto" style={{ opacity: 0.55 }} />
-              <a href="https://www.ikointl.com/" target="_blank" rel="noopener noreferrer"
-                className="font-body text-accent underline hover:text-accent/70" style={{ fontSize: 13 }}>
-                What is IKO?
-              </a>
+            {/* IKO Affiliated Center badge */}
+            <motion.div variants={fadeIn} className="flex flex-col items-center gap-3 mt-8 pt-8" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+              <img src={ikoBadge.src} alt="IKO Affiliated Center" className="h-16 md:h-20 w-auto" />
+              <div className="flex items-center gap-2">
+                <img src={ikoLogo.src} alt="IKO Kite Center" className="h-5 w-auto" style={{ opacity: 0.45 }} />
+                <a href="https://www.ikointl.com/" target="_blank" rel="noopener noreferrer"
+                  className="font-body text-accent underline hover:text-accent/70" style={{ fontSize: 13 }}>
+                  What is IKO?
+                </a>
+              </div>
             </motion.div>
           </motion.div>
         </div>

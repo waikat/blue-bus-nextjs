@@ -12,6 +12,7 @@ import ikoPhoto       from "@/assets/Iko-instructors.jpg";
 import boatPhoto      from "@/assets/rescue-boats.jpg";
 import flatWaterPhoto from "@/assets/Flat-water-2.jpg";
 import chillPhoto     from "@/assets/chill-area-a.jpg";
+import ikoBadge       from "@/assets/iko-affiliated.avif";
 
 const GOOGLE_REVIEWS_URL     = "https://g.page/r/CSyJMvsyaLAJEBE/review";
 const BOOKING_ALL_LESSONS_ID = "g370000000b0000000c022b3d";
@@ -202,6 +203,7 @@ export default function HomePage() {
           <p className="category-label mb-4" style={{ color: CYAN }}>
             IKO Certified · Since 2001
           </p>
+          <img src={ikoBadge.src} alt="IKO Affiliated Center" className="h-12 w-auto mb-5" />
           <h2
             className="font-display font-black text-white uppercase tracking-tighter mb-5"
             style={{ fontSize: "clamp(30px,4vw,56px)", lineHeight: 0.91 }}
