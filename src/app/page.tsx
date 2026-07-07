@@ -12,6 +12,7 @@ import ikoPhoto       from "@/assets/Iko-instructors.jpg";
 import boatPhoto      from "@/assets/rescue-boats.jpg";
 import flatWaterPhoto from "@/assets/Flat-water-2.jpg";
 import chillPhoto     from "@/assets/chill-area-a.jpg";
+import ikoBadge       from "@/assets/iko-affiliated.avif";
 
 const GOOGLE_REVIEWS_URL     = "https://g.page/r/CSyJMvsyaLAJEBE/review";
 const BOOKING_ALL_LESSONS_ID = "g370000000b0000000c022b3d";
