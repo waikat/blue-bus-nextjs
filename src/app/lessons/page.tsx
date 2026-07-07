@@ -513,15 +513,13 @@ export default function LessonsPage() {
             </motion.p>
 
             {/* IKO Affiliated Center badge */}
-            <motion.div variants={fadeIn} className="flex flex-col items-center gap-3 mt-8 pt-8" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
-              <img src={ikoBadge.src} alt="IKO Affiliated Center" className="h-16 md:h-20 w-auto" />
-              <div className="flex items-center gap-2">
-                <img src={ikoLogo.src} alt="IKO Kite Center" className="h-5 w-auto" style={{ opacity: 0.45 }} />
-                <a href="https://www.ikointl.com/" target="_blank" rel="noopener noreferrer"
-                  className="font-body text-accent underline hover:text-accent/70" style={{ fontSize: 13 }}>
-                  What is IKO?
-                </a>
-              </div>
+            <motion.div variants={fadeIn} className="flex items-center gap-4 mt-8 pt-8 justify-center flex-wrap" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+              <img src={ikoBadge.src} alt="IKO Affiliated Center" className="h-12 md:h-14 w-auto flex-shrink-0" />
+              <img src={ikoLogo.src} alt="IKO Kite Center" className="h-5 w-auto flex-shrink-0" style={{ opacity: 0.45 }} />
+              <a href="https://www.ikointl.com/" target="_blank" rel="noopener noreferrer"
+                className="font-body text-accent underline hover:text-accent/70 whitespace-nowrap" style={{ fontSize: 13 }}>
+                What is IKO?
+              </a>
             </motion.div>
           </motion.div>
         </div>

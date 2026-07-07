@@ -12,7 +12,6 @@ import ikoPhoto       from "@/assets/Iko-instructors.jpg";
 import boatPhoto      from "@/assets/rescue-boats.jpg";
 import flatWaterPhoto from "@/assets/Flat-water-2.jpg";
 import chillPhoto     from "@/assets/chill-area-a.jpg";
-import ikoBadge       from "@/assets/iko-affiliated.avif";
 
 const GOOGLE_REVIEWS_URL     = "https://g.page/r/CSyJMvsyaLAJEBE/review";
 const BOOKING_ALL_LESSONS_ID = "g370000000b0000000c022b3d";
@@ -203,7 +202,6 @@ export default function HomePage() {
           <p className="category-label mb-4" style={{ color: CYAN }}>
             IKO Certified · Since 2001
           </p>
-          <img src={ikoBadge.src} alt="IKO Affiliated Center" className="h-12 w-auto mb-5" />
           <h2
             className="font-display font-black text-white uppercase tracking-tighter mb-5"
             style={{ fontSize: "clamp(30px,4vw,56px)", lineHeight: 0.91 }}
@@ -225,15 +223,18 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20">
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}
-            className="mb-10"
+            className="mb-10 flex flex-col sm:flex-row sm:items-end sm:gap-6"
           >
-            <p className="category-label mb-3">Why choose us</p>
-            <h2
-              className="font-display font-black text-foreground uppercase tracking-tighter"
-              style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}
-            >
-              What makes the difference.
-            </h2>
+            <img src={ikoBadge.src} alt="IKO Affiliated Center" className="h-16 w-auto flex-shrink-0 mb-4 sm:mb-0" />
+            <div>
+              <p className="category-label mb-3">Why choose us</p>
+              <h2
+                className="font-display font-black text-foreground uppercase tracking-tighter"
+                style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}
+              >
+                What makes the difference.
+              </h2>
+            </div>
           </motion.div>
 
           <motion.div
