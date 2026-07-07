@@ -513,7 +513,7 @@ export default function LessonsPage() {
             </motion.p>
 
             {/* IKO Affiliated Center badge */}
-            <motion.div variants={fadeIn} className="flex items-center gap-4 mt-8 pt-8 justify-center flex-wrap" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
+            <motion.div variants={fadeIn} className="flex items-center gap-8 mt-8 pt-8 justify-center flex-wrap" style={{ borderTop: "1px solid rgba(0,0,0,0.06)" }}>
               <img src={ikoBadge.src} alt="IKO Affiliated Center" className="h-12 md:h-14 w-auto flex-shrink-0" />
               <img src={ikoLogo.src} alt="IKO Kite Center" className="h-5 w-auto flex-shrink-0" style={{ opacity: 0.45 }} />
               <a href="https://www.ikointl.com/" target="_blank" rel="noopener noreferrer"
