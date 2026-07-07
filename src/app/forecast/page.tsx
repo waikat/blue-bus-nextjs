@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { ArrowUp, RefreshCw, Wind, Moon } from "lucide-react";
+import InstallPrompt from "@/components/InstallPrompt";
 
 const STATION_ID = "209895";
 const TOKEN      = "146dcf5f-6c5e-4668-a157-e0a082a9f24f";
@@ -18,7 +19,6 @@ const LABEL_W = 96;
 
 const fadeIn = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.45 } } };
 
-// ── Types ─────────────────────────────────────────────────────────────────────
 interface HourlyForecast {
   local_hour:              number;
   local_day:               number;
@@ -62,7 +62,6 @@ interface DailyWindSummary {
   hasData:            boolean;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function buildDailyFromHourly(daily: DailyForecast[], hourly: HourlyForecast[]): DailyWindSummary[] {
   return daily.map((d) => {
     const dayOfMonth = new Date(d.day_start_local * 1000).getDate();
@@ -141,7 +140,6 @@ const ICON_MAP: Record<string, string> = {
 };
 function wxIcon(icon: string) { return ICON_MAP[icon] ?? "🌤️"; }
 
-// ── Legend ────────────────────────────────────────────────────────────────────
 function Legend() {
   const items = [
     { label: "Too Light",   hex: "#c8c8c8", range: "< 8"   },
@@ -165,7 +163,6 @@ function Legend() {
   );
 }
 
-// ── Grid components ───────────────────────────────────────────────────────────
 function GridRowLabel({ label, sub, dark }: { label: string; sub?: string; dark?: boolean }) {
   return (
     <div
@@ -188,7 +185,6 @@ function GridCell({ children, className = "" }: { children: React.ReactNode; cla
   );
 }
 
-// ── Station Offline ───────────────────────────────────────────────────────────
 function StationOffline() {
   return (
     <div style={{ background: SAND }} className="min-h-screen">
@@ -250,11 +246,11 @@ function StationOffline() {
           </div>
         </div>
       </section>
+      <InstallPrompt />
     </div>
   );
 }
 
-// ── Main page ─────────────────────────────────────────────────────────────────
 export default function Forecast() {
   const [data,        setData]        = useState<WeatherData | null>(null);
   const [loading,     setLoading]     = useState(true);
@@ -316,7 +312,6 @@ export default function Forecast() {
   return (
     <div style={{ background: SAND }} className="min-h-screen">
 
-      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
       <section style={{ background: OCEAN_DEEP }} className="pt-8 pb-14">
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
@@ -346,7 +341,6 @@ export default function Forecast() {
         </div>
       </section>
 
-      {/* ── LOADING ──────────────────────────────────────────────────────────── */}
       {loading && !data && (
         <div className="flex flex-col items-center justify-center py-32 gap-4">
           <div className="w-10 h-10 border-4 border-t-transparent rounded-full animate-spin" style={{ borderColor: CYAN, borderTopColor: "transparent" }} />
@@ -357,7 +351,6 @@ export default function Forecast() {
       {data && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
 
-          {/* ── CURRENT CONDITIONS ───────────────────────────────────────────── */}
           {cur && (
             <motion.div
               initial="hidden" animate="visible" variants={fadeIn}
@@ -365,8 +358,6 @@ export default function Forecast() {
               style={{ borderRadius: 12, boxShadow: "0 4px 16px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.05)" }}
             >
               <div className="grid grid-cols-1 md:grid-cols-2">
-
-                {/* Left — big wind number */}
                 <div
                   className="p-8 md:p-12 flex flex-col justify-between gap-8"
                   style={{ background: OCEAN_DEEP }}
@@ -400,7 +391,6 @@ export default function Forecast() {
                   </div>
                 </div>
 
-                {/* Right — condition + direction + temp */}
                 <div className="grid grid-cols-1 divide-y divide-black/08 bg-white">
                   <div className="p-6 md:p-8">
                     <p className="category-label mb-3">Conditions</p>
@@ -445,7 +435,6 @@ export default function Forecast() {
             </motion.div>
           )}
 
-          {/* ── MOBILE: 5-DAY SCROLL ─────────────────────────────────────────── */}
           {daily5.length > 0 && (
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}
@@ -482,7 +471,6 @@ export default function Forecast() {
             </motion.div>
           )}
 
-          {/* ── DESKTOP: HOURLY GRID ─────────────────────────────────────────── */}
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}
             className="hidden md:block mb-12"
@@ -502,7 +490,6 @@ export default function Forecast() {
               style={{ borderRadius: 12, boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.08)" }}
             >
               <div className="flex">
-                {/* Fixed label column */}
                 <div className="flex-shrink-0 flex flex-col" style={{ width: LABEL_W, minWidth: LABEL_W }}>
                   <div className="border-b border-r border-black/10 flex-shrink-0" style={{ background: OCEAN_DEEP, height: 44 }} />
                   <GridRowLabel label="Hour" dark />
@@ -513,9 +500,7 @@ export default function Forecast() {
                   <GridRowLabel label="Temp" sub="°C" />
                 </div>
 
-                {/* Scrollable data */}
                 <div className="flex-1 overflow-x-auto hide-scrollbar">
-                  {/* Day headers */}
                   <div className="flex border-b border-black/10" style={{ background: OCEAN_DEEP, height: 44 }}>
                     {dayGroups.map((group, i) => (
                       <div
@@ -529,7 +514,6 @@ export default function Forecast() {
                       </div>
                     ))}
                   </div>
-                  {/* Hour */}
                   <div className="flex border-b border-black/08 bg-black/[0.02]">
                     {hourly.map((h, i) => (
                       <GridCell key={i} className="py-3">
@@ -537,7 +521,6 @@ export default function Forecast() {
                       </GridCell>
                     ))}
                   </div>
-                  {/* Wind */}
                   <div className="flex border-b border-black/08 bg-white">
                     {hourly.map((h, i) => {
                       const { cell, text } = windColor(Math.round(h.wind_avg));
@@ -548,7 +531,6 @@ export default function Forecast() {
                       );
                     })}
                   </div>
-                  {/* Direction */}
                   <div className="flex border-b border-black/08 bg-black/[0.02]">
                     {hourly.map((h, i) => (
                       <GridCell key={i} className="py-3">
@@ -557,7 +539,6 @@ export default function Forecast() {
                       </GridCell>
                     ))}
                   </div>
-                  {/* Gust */}
                   <div className="flex border-b border-black/08 bg-white">
                     {hourly.map((h, i) => {
                       const { cell, text } = gustColor(Math.round(h.wind_gust));
@@ -568,7 +549,6 @@ export default function Forecast() {
                       );
                     })}
                   </div>
-                  {/* Sky */}
                   <div className="flex border-b border-black/08 bg-black/[0.02]">
                     {hourly.map((h, i) => (
                       <GridCell key={i} className="py-3">
@@ -576,7 +556,6 @@ export default function Forecast() {
                       </GridCell>
                     ))}
                   </div>
-                  {/* Temp */}
                   <div className="flex bg-white">
                     {hourly.map((h, i) => {
                       const { cell, text } = tempColor(Math.round(h.air_temperature));
@@ -595,7 +574,6 @@ export default function Forecast() {
             </p>
           </motion.div>
 
-          {/* ── DESKTOP: 7-DAY ───────────────────────────────────────────────── */}
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}
             className="hidden md:block mb-12"
@@ -646,7 +624,6 @@ export default function Forecast() {
             </p>
           </motion.div>
 
-          {/* ── EXTERNAL LINKS ───────────────────────────────────────────────── */}
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}
             className="mt-4"
@@ -682,6 +659,8 @@ export default function Forecast() {
 
         </div>
       )}
+
+      <InstallPrompt />
     </div>
   );
 }
