@@ -12,7 +12,6 @@ import ikoPhoto       from "@/assets/Iko-instructors.jpg";
 import boatPhoto      from "@/assets/rescue-boats.jpg";
 import flatWaterPhoto from "@/assets/Flat-water-2.jpg";
 import chillPhoto     from "@/assets/chill-area-a.jpg";
-import ikoBadge       from "@/assets/iko-affiliated.avif";
 
 const GOOGLE_REVIEWS_URL     = "https://g.page/r/CSyJMvsyaLAJEBE/review";
 const BOOKING_ALL_LESSONS_ID = "g370000000b0000000c022b3d";
@@ -224,18 +223,15 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20">
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeIn}
-            className="mb-10 flex flex-col sm:flex-row sm:items-end sm:gap-6"
+            className="mb-10"
           >
-            <img src={ikoBadge.src} alt="IKO Affiliated Center" className="h-16 w-auto flex-shrink-0 mb-4 sm:mb-0" />
-            <div>
-              <p className="category-label mb-3">Why choose us</p>
-              <h2
-                className="font-display font-black text-foreground uppercase tracking-tighter"
-                style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}
-              >
-                What makes the difference.
-              </h2>
-            </div>
+            <p className="category-label mb-3">Why choose us</p>
+            <h2
+              className="font-display font-black text-foreground uppercase tracking-tighter"
+              style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}
+            >
+              What makes the difference.
+            </h2>
           </motion.div>
 
           <motion.div
