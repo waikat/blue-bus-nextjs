@@ -104,7 +104,7 @@ export default function Privacy() {
                   "Usage data such as pages visited and time on site, collected automatically through Google Analytics if you accept analytics cookies.",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">—</span>
+                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">*</span>
                     {item}
                   </li>
                 ))}
@@ -120,7 +120,7 @@ export default function Privacy() {
                   "Analytics data is used to understand how visitors use our website so we can improve it. This data is anonymized and never linked to your personal identity.",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">—</span>
+                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">*</span>
                     {item}
                   </li>
                 ))}
@@ -138,7 +138,7 @@ export default function Privacy() {
                   "Google Business — our business profile on Google. If you leave a review, that data is governed by Google's own privacy policy.",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">—</span>
+                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">*</span>
                     {item}
                   </li>
                 ))}
@@ -154,7 +154,7 @@ export default function Privacy() {
                   "Third-party cookies: the Viking Bookings booking widget may set its own session cookies when you interact with it. These are governed by Viking Bookings' privacy policy.",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">—</span>
+                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">*</span>
                     {item}
                   </li>
                 ))}
@@ -171,7 +171,7 @@ export default function Privacy() {
                   "Analytics data: retained for 26 months, then automatically deleted by Google.",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">—</span>
+                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">*</span>
                     {item}
                   </li>
                 ))}
@@ -189,7 +189,7 @@ export default function Privacy() {
                   "Withdraw consent at any time without affecting the lawfulness of prior processing.",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3">
-                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">—</span>
+                    <span style={{ color: CYAN }} className="flex-shrink-0 font-black">*</span>
                     {item}
                   </li>
                 ))}

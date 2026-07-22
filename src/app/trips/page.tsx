@@ -25,8 +25,8 @@ const stagger = {
 };
 
 const brazilGroups = [
-  { id: "brazil-2026-group-1", label: "First Group", dates: "19 – 26 September 2026", duration: "8 days", spotsLeft: 8, price: "$2,200", priceNote: "single room, per person", status: "Booking Open" },
-  { id: "brazil-2026-group-2", label: "Second Group", dates: "1 – 11 October 2026", duration: "11 days", spotsLeft: 8, price: "$3,200", priceNote: "single room, per person", status: "Booking Open" },
+  { id: "brazil-2026-group-1", label: "First Group", dates: "September 19-26, 2026", duration: "8 days", spotsLeft: 8, price: "$2,200", priceNote: "single room, per person", status: "Booking Open" },
+  { id: "brazil-2026-group-2", label: "Second Group", dates: "October 1-11, 2026", duration: "11 days", spotsLeft: 8, price: "$3,200", priceNote: "single room, per person", status: "Booking Open" },
 ];
 
 export default function TripsPage() {

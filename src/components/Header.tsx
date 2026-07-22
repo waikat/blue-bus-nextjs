@@ -35,7 +35,7 @@ export default function Header({ onWeatherClick, weatherOpen, setWeatherOpen }: 
 
   return (
     <>
-      {/* Main header — sits directly under the STINAPA bar in layout.tsx */}
+      {/* Main header - sits directly under the STINAPA bar in layout.tsx */}
       <header
         className="sticky top-0 left-0 right-0 z-40"
         style={{ background: HEADER_BG }}
