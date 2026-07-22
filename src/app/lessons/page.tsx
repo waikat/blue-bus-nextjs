@@ -70,7 +70,7 @@ const PACKAGES: Record<string, Pkg[]> = {
 
 const SERVICES = [
   { tag: "For riders who already ride", title: "Coaching session",    desc: "Ninety minutes of personalized coaching on one specific skill. Master a new trick, nail your technique, perfect your upwind, or conquer a new move. You pick the focus.", price: "\$185", duration: "1.5 hrs", vikingId: "3700000006000000d1da41cf" },
-  { tag: "Building confidence",         title: "Beach support",       desc: "You know how to kite. You're building trust in a new spot. We handle launch and landing (the critical parts), guide your setup, and help you in and out of the water safely. Once you're riding, you're independent — but you'll feel supported. Two hours of confidence building.", price: "\$100", duration: "2 hrs", vikingId: "370000002a00000057caa525" },
+  { tag: "Building confidence",         title: "Beach support",       desc: "You know how to kite. You're building trust in a new spot. We handle launch and landing (the critical parts), guide your setup, and help you in and out of the water safely. Once you're riding, you're independent, but you'll feel supported. Two hours of confidence building.", price: "\$100", duration: "2 hrs", vikingId: "370000002a00000057caa525" },
   { tag: "IKO Affiliated Center",       title: "IKO certification",   desc: "Already riding without an official card? We evaluate and certify you at the right level. Some beaches (Miami, most of the USA, Australia) legally require a cert for safety and insurance. Level 3 gets you rental access and legal clearance worldwide.", price: "\$185", duration: "1.5 hrs", vikingId: "3700000021000000564da4f2" },
 ];
 
