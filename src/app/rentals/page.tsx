@@ -115,13 +115,11 @@ const tiers = [
     featured: false,
     rows: [
       { product: "Foil complete set", half: "$100", full: "$140", note: "Wing, bar, foilboard" },
-      { product: "Foilboard only", half: "$50", full: "$75", note: "Own wing and bar" },
     ],
   },
 ];
 
 const bundles = [
-  { sessions: "1 session", price: "$80", per: "$80 per session", savings: "", best: false },
   { sessions: "3 sessions", price: "$225", per: "$75 per session", savings: "Save $15", best: false },
   { sessions: "5 sessions", price: "$360", per: "$72 per session", savings: "Save $40", best: false },
   { sessions: "10 sessions", price: "$680", per: "$68 per session", savings: "Save $120", best: true },
@@ -202,12 +200,9 @@ export default function RentalsPage() {
     <>
       {/* ── HERO ─────────────────────────────────────────────────────── */}
       <section className="relative min-h-[65vh] md:min-h-[75vh] overflow-hidden flex items-center justify-center">
-        <video 
-          src="/videos/hero_hyperlapse3.mp4" 
-          autoPlay 
-          muted 
-          loop 
-          playsInline
+        <img
+          src={rentalsHero.src}
+          alt="Kiteboarding gear at Atlantis Beach"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[rgba(5,18,40,0.3)] via-[rgba(5,18,40,0.5)] to-[rgba(5,18,40,0.8)]" />
