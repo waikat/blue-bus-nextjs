@@ -8,6 +8,7 @@ import instructor1 from "@/assets/instructor-1.jpg";
 import instructor2 from "@/assets/instructor-2.jpg";
 import instructor3 from "@/assets/instructor-3.jpg";
 import instructor4 from "@/assets/instructor-4.jpg";
+import instructor5 from "@/assets/instructor-5.jpg";
 import communityPhoto from "@/assets/community-photo.jpg";
 import beachSetup from "@/assets/beach-setup.jpg";
 const OCEAN = "hsl(213,85%,38%)";
@@ -27,6 +28,7 @@ const instructors = [
   { name: "Can", photo: instructor2.src },
   { name: "Jaco", photo: instructor3.src },
   { name: "Andre", photo: instructor4.src },
+  { name: "Floor", photo: instructor5.src },
 ];
 export default function AboutPage() {
   return (

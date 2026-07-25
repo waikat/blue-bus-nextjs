@@ -1,291 +1,158 @@
 "use client";
-
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import BookingModal from "@/components/BookingModal";
-import lessonAction from "@/assets/lesson-action.jpg";
-import rentalsHero from "@/assets/rentals-hero.jpg";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import aboutHero from "@/assets/About-us.jpg";
+import rommelPhoto from "@/assets/rommel-rivas.jpg";
+import carlosPhoto from "@/assets/carlos-lilue.jpg";
+import instructor1 from "@/assets/instructor-1.jpg";
+import instructor2 from "@/assets/instructor-2.jpg";
+import instructor3 from "@/assets/instructor-3.jpg";
+import instructor4 from "@/assets/instructor-4.jpg";
+import communityPhoto from "@/assets/community-photo.jpg";
 import beachSetup from "@/assets/beach-setup.jpg";
-
-const WHATSAPP_URL = "https://wa.me/5997015483?text=Hi!%20I'm%20interested%20in%20equipment%20rentals%20at%20Bonaire";
-const VIKING_BUNDLE_ID = "3700000022000000b8e211e0"; // Bundle booking
-const VIKING_RENTALS_ID = "g37000000040000005a124865"; // Fallback individual
-
-// Design system colors
 const OCEAN = "hsl(213,85%,38%)";
 const OCEAN_DEEP = "hsl(213,85%,22%)";
 const CYAN = "hsl(186,100%,42%)";
 const SAND = "hsl(42,35%,97%)";
 const INK = "hsl(0,0%,10%)";
-
-// Animations (hero only)
-const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } } };
-const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } };
-
-// All other sections: opacity fadeIn ONLY
+const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } } };
 const fadeInOnly = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } };
-
-type Duration = "half" | "full";
-
-// ToggleSwitch Component
-function ToggleSwitch({
-  leftLabel,
-  rightLabel,
-  value,
-  onChange,
-}: {
-  leftLabel: string;
-  rightLabel: string;
-  value: boolean;
-  onChange: (v: boolean) => void;
-}) {
-  return (
-    <div className="flex items-center justify-center gap-4">
-      <button onClick={() => onChange(false)} className="text-right transition-all duration-200" style={{ minWidth: 100 }}>
-        <span className="font-black uppercase tracking-[0.12em] block transition-colors duration-200" style={{ fontSize: 12, color: !value ? INK : "rgba(0,0,0,0.35)" }}>
-          {leftLabel}
-        </span>
-      </button>
-
-      <button
-        onClick={() => onChange(!value)}
-        aria-pressed={value}
-        className="flex-shrink-0 relative transition-colors duration-300"
-        style={{
-          width: 50,
-          height: 28,
-          borderRadius: 4,
-          background: value ? CYAN : OCEAN,
-          border: "none",
-          cursor: "pointer",
-          outline: "none",
-        }}
-      >
-        <div
-          className="absolute"
-          style={{
-            top: 3,
-            left: value ? 26 : 3,
-            width: 22,
-            height: 22,
-            borderRadius: 2,
-            background: "#fff",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
-            transition: "left 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          }}
-        />
-      </button>
-
-      <button onClick={() => onChange(true)} className="text-left transition-all duration-200" style={{ minWidth: 100 }}>
-        <span className="font-black uppercase tracking-[0.12em] block transition-colors duration-200" style={{ fontSize: 12, color: value ? INK : "rgba(0,0,0,0.35)" }}>
-          {rightLabel}
-        </span>
-      </button>
-    </div>
-  );
-}
-
-const tiers = [
-  {
-    name: "Kites",
-    tagline: "Complete kite sets",
-    desc: "Kite and bar included. Ready to go.",
-    featured: false,
-    rows: [
-      { product: "Kite set", half: "$80", full: "$100", note: "Includes kite and bar" },
-    ],
-  },
-  {
-    name: "Kite Only",
-    tagline: "Kite and bar",
-    desc: "Bring your own board.",
-    featured: false,
-    rows: [
-      { product: "Kite rental", half: "$60", full: "$80", note: "Kite and bar only" },
-    ],
-  },
-  {
-    name: "Foils",
-    tagline: "Hydrofoil rentals",
-    desc: "Experience foiling on Atlantis Beach.",
-    featured: false,
-    rows: [
-      { product: "Foil rental", half: "$100", full: "$140", note: "Includes foil board" },
-    ],
-  },
-  {
-    name: "Boards",
-    tagline: "Twintips and directional",
-    desc: "Bring your own kite.",
-    featured: false,
-    rows: [
-      { product: "Board rental", half: "$25", full: "$40", note: "Twintip or directional" },
-    ],
-  },
-  {
-    name: "Storage",
-    tagline: "Locker rentals",
-    desc: "Safe storage for your gear.",
-    featured: false,
-    rows: [
-      { product: "Locker per day", half: "$10", full: "$10", note: "" },
-      { product: "Locker per week", half: "$60", full: "$60", note: "" },
-      { product: "Locker per month", half: "$180", full: "$180", note: "" },
-    ],
-  },
+const people = [
+  { name: "Rommel Rivas", role: "Owner, The Blue Bus", bio: "Kiter, Venezuelan, Bonaire local. He took the keys of the Blue Bus in 2016 and never looked back. First one on the beach, last one to leave.", photo: rommelPhoto.src, dark: true },
+  { name: "Carlos Lilue", role: "Operations", bio: "The one who makes the beach happen every day. Bus, boat, tents, chairs. Carlos sets up the world so everyone else can enjoy it.", photo: carlosPhoto.src, dark: false },
 ];
-
-export default function Rentals() {
-  const [bookingOpen, setBookingOpen] = useState(false);
-  const [isDuration, setIsDuration] = useState(false);
-
+const instructors = [
+  { name: "Linda", photo: instructor1.src },
+  { name: "Can", photo: instructor2.src },
+  { name: "Jaco", photo: instructor3.src },
+  { name: "Andre", photo: instructor4.src },
+];
+export default function AboutPage() {
   return (
-    <div style={{ background: SAND }}>
-      {/* Hero */}
-      <section style={{ background: OCEAN_DEEP }} className="pt-8 pb-20 md:pb-28">
-        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
-          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-            <motion.div initial="hidden" animate="visible" variants={stagger}>
-              <motion.p variants={fadeUp} className="category-label mb-4" style={{ color: CYAN }}>
-                Rent quality gear
-              </motion.p>
-              <motion.h1
-                variants={fadeUp}
-                className="font-display font-black text-white uppercase tracking-tighter mb-6"
-                style={{ fontSize: "clamp(44px,8vw,100px)", lineHeight: 0.95 }}
-              >
-                Rentals
-              </motion.h1>
-              <motion.p variants={fadeUp} className="font-body text-white/75 text-base leading-relaxed mb-8">
-                Everything you need, nothing you have to carry. Half day or full day. Bring your own or rent the complete setup.
-              </motion.p>
+    <div style={{ background: SAND }} className="min-h-screen">
+      <section className="relative flex items-end justify-start overflow-hidden" style={{ minHeight: "70vh" }}>
+        <img src={aboutHero.src} alt="Kiteboarding Bonaire" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.05) 25%, rgba(7,17,31,0.65) 55%, rgba(7,17,31,0.93) 80%, rgba(7,17,31,1) 100%)" }} />
+        <div className="relative z-10 w-full px-8 sm:px-14 lg:px-20 pb-16 md:pb-24">
+          <motion.div initial="hidden" animate="visible" variants={stagger}>
+            <motion.p variants={fadeUp} className="font-display font-black uppercase tracking-widest text-[12px] mb-6" style={{ color: CYAN }}>Est. 2001, Bonaire</motion.p>
+            <motion.h1 variants={fadeUp} className="font-black text-white uppercase tracking-tighter mb-6 text-[clamp(52px,9vw,120px)] leading-[0.88]">The<br />Blue Bus</motion.h1>
+            <motion.p variants={fadeUp} className="font-body uppercase tracking-widest text-[12px] mb-10 max-w-[500px]" style={{ color: "rgba(255,255,255,0.75)" }}>The original. Still here. Still flying.</motion.p>
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4">
+              <Link href="/lessons" className="font-display font-black uppercase tracking-widest px-8 py-4 text-[11px] rounded-none" style={{ background: CYAN, color: "#fff", border: "none" }}>Book a Lesson</Link>
+              <a href="https://wa.me/5997015483" target="_blank" rel="noopener noreferrer" className="font-display font-black uppercase tracking-widest px-8 py-4 text-[11px] rounded-none" style={{ background: "transparent", color: "#fff", border: `2px solid ${CYAN}` }}>WhatsApp Us</a>
             </motion.div>
-            <motion.div variants={fadeUp} initial="hidden" animate="visible" className="overflow-hidden rounded-lg">
-              <img src={rentalsHero.src} alt="Rental gear at Bonaire" className="w-full h-full object-cover" />
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Session Bundles */}
-      <section style={{ background: SAND }} className="py-20 md:py-28">
-        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="mb-10">
-            <p className="category-label mb-3" style={{ color: CYAN }}>
-              Save 15 percent
-            </p>
-            <h2 className="font-display font-black text-foreground uppercase tracking-tighter" style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}>
-              Book a full package
-            </h2>
-          </motion.div>
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeInOnly}
-            className="p-8 md:p-12 mb-8"
-            style={{
-              background: "#fff",
-              borderRadius: 12,
-              boxShadow: "0 4px 16px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.05)",
-            }}
-          >
-            <p className="font-body text-foreground/70 text-base leading-relaxed mb-6">
-              Book a complete rental package for the day and save 15 percent. Includes kite set, board, harness, and all the gear you need to make the most of your time at Atlantis Beach. Perfect for trips or extended visits.
-            </p>
-            <a
-              href={`https://app.vikingbookings.com/widget/booking/${VIKING_BUNDLE_ID}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-6 py-3 font-display font-black text-sm uppercase tracking-widest rounded text-white transition-colors"
-              style={{ background: OCEAN, cursor: "pointer" }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = OCEAN_DEEP)}
-              onMouseLeave={(e) => (e.currentTarget.style.background = OCEAN)}
-            >
-              Book a Bundle
-            </a>
           </motion.div>
         </div>
       </section>
-
-      {/* Individual Rentals */}
-      <section style={{ background: SAND }} className="py-8 md:py-16">
+      <section className="py-20 md:py-28" style={{ background: OCEAN_DEEP }}>
         <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="mb-12">
-            <p className="category-label mb-3" style={{ color: CYAN }}>
-              Mix and match
-            </p>
-            <h2 className="font-display font-black text-foreground uppercase tracking-tighter mb-2" style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}>
-              Rent individually
-            </h2>
-            <p className="font-body text-foreground/60 text-base">Choose your own rental combination.</p>
-          </motion.div>
-
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="mb-8 flex justify-center">
-            <ToggleSwitch leftLabel="Half Day" rightLabel="Full Day" value={isDuration} onChange={setIsDuration} />
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tiers.map((tier, i) => (
-              <motion.div
-                key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeInOnly}
-                className="p-6 md:p-8 rounded-lg"
-                style={{
-                  background: "#fff",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)",
-                }}
-              >
-                <p className="category-label mb-2" style={{ color: CYAN }}>
-                  {tier.tagline}
-                </p>
-                <h3 className="font-display font-black text-foreground uppercase tracking-tighter text-xl leading-tight mb-2">{tier.name}</h3>
-                <p className="font-body text-foreground/60 text-sm mb-6">{tier.desc}</p>
-
-                <div className="space-y-4">
-                  {tier.rows.map((row, idx) => {
-                    const price = isDuration ? row.full : row.half;
-                    return (
-                      <div key={idx} className="flex justify-between items-baseline gap-4">
-                        <div>
-                          <p className="font-display font-black text-foreground text-sm uppercase tracking-wide">{row.product}</p>
-                          {row.note && <p className="font-body text-foreground/50 text-xs mt-0.5">{row.note}</p>}
-                        </div>
-                        <p className="font-display font-black text-foreground text-lg flex-shrink-0">{price}</p>
-                      </div>
-                    );
-                  })}
-                </div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.p variants={fadeUp} className="font-display font-black uppercase tracking-widest text-[12px] mb-6" style={{ color: CYAN }}>Our Why</motion.p>
+            <motion.h2 variants={fadeUp} className="font-black text-white uppercase tracking-tighter mb-12 text-[clamp(32px,4.5vw,60px)] leading-[0.88]">Kiteboarding is not<br />our job. It's our life.</motion.h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
+              <motion.div variants={fadeUp}>
+                <p className="font-body text-[15px] leading-[1.7] text-white/85 mb-6">We live for the ocean, the wind, nature, and the freedom that comes from being on the water. Kiteboarding is a lifestyle. It's a call that transforms people, some come for the adventure in their holiday, others answer the call of their soul.</p>
+                <p className="font-body text-[15px] leading-[1.7] text-white/75">We've seen people change for the better through the elements, through the freedom, through the sport. It touches every part of your life. That transformation is what we're part of, and that's why we do this.</p>
               </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section style={{ background: SAND }} className="py-16 md:py-20">
-        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="p-8 md:p-12 text-center rounded-lg" style={{ background: OCEAN_DEEP }}>
-            <p className="category-label mb-4" style={{ color: CYAN }}>
-              Questions?
-            </p>
-            <h2 className="font-display font-black text-white uppercase tracking-tighter mb-6" style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}>
-              Get in touch
-            </h2>
-            <p className="font-body text-white/75 text-base mb-8 max-w-2xl mx-auto">
-              Not sure what you need? Message us on WhatsApp or send an email. We'll help you pick the right gear for your session.
-            </p>
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-3 font-display font-black text-sm uppercase tracking-widest rounded text-black transition-colors" style={{ background: CYAN }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}>
-              Message on WhatsApp
-            </a>
+              <motion.div variants={fadeUp}>
+                <p className="font-body text-[15px] leading-[1.7] text-white/85 mb-6">KBB isn't the bus or the infrastructure. KBB is Atlantis. KBB is Bonaire. KBB is the locals who've been building this spot for years, and the visitors who fall in love with it and become part of the family.</p>
+                <p className="font-body text-[15px] leading-[1.7] text-white/75">We believe in bringing joy, happiness, and the freedom of the water to as many people as we can. We grow the sport, we grow the community, we grow the KBB family. We're all in this together, since the beginning.</p>
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </section>
-
-      <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} title="Reserve Gear" productId={VIKING_RENTALS_ID} />
+      <section className="py-20 md:py-28" style={{ background: SAND }}>
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start mb-16">
+              <motion.div variants={fadeUp}>
+                <p className="font-display font-black uppercase tracking-widest text-[12px] mb-6" style={{ color: CYAN }}>Our History</p>
+                <h2 className="font-black uppercase tracking-tighter text-[clamp(32px,4.5vw,60px)] leading-[0.88]" style={{ color: INK }}>25 Years on<br />the Same Beach</h2>
+              </motion.div>
+              <motion.div variants={fadeUp}>
+                <p className="font-body text-[15px] leading-[1.7] text-[rgba(0,0,0,0.75)] mb-6">Roan Jaspers put the first kite in the air on Atlantis Beach in 2001. Nobody had done it before in the Caribbean. In 2016, Rommel took the keys. Not as a businessman, but as a rider who had been part of this community and couldn't imagine it going anywhere else.</p>
+                <p className="font-body text-[15px] leading-[1.7] text-[rgba(0,0,0,0.7)]">What hasn't changed in 25 years is why people show up. The wind. The water. The feeling when Atlantis Beach comes into view and the kites are already in the air.</p>
+              </motion.div>
+            </div>
+            <motion.div variants={fadeUp} className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-12 border-t-2" style={{ borderColor: INK }}>
+              {[{ num: "2001", label: "First kite school on Bonaire" }, { num: "25+", label: "Years on the same beach" }, { num: "10K+", label: "Students worldwide" }, { num: "50+", label: "Countries represented" }].map((s) => (
+                <div key={s.num}>
+                  <p className="font-display font-black leading-none mb-3" style={{ fontSize: "clamp(32px, 5vw, 52px)", color: INK }}>{s.num}</p>
+                  <p className="font-display font-black text-[11px] uppercase tracking-widest" style={{ color: "rgba(0,0,0,0.5)" }}>{s.label}</p>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+      <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="overflow-hidden" style={{ height: "clamp(280px, 45vw, 560px)" }}>
+        <img src={communityPhoto.src} alt="KBB Community at Atlantis Beach" className="w-full h-full object-cover" />
+      </motion.div>
+      <section className="py-20 md:py-28" style={{ background: SAND }}>
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.div variants={fadeUp} className="mb-16">
+              <p className="font-display font-black uppercase tracking-widest text-[12px] mb-6" style={{ color: CYAN }}>The people on the beach</p>
+              <h2 className="font-black uppercase tracking-tighter text-[clamp(32px,4.5vw,60px)] leading-[0.88]" style={{ color: INK }}>The KBB Family</h2>
+            </motion.div>
+            <motion.div variants={fadeUp} className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+              {people.map((person) => (
+                <div key={person.name} className="flex flex-col overflow-hidden rounded-[12px]" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+                  <div className="relative overflow-hidden" style={{ height: "clamp(260px, 30vw, 420px)" }}>
+                    <img src={person.photo} alt={person.name} className="w-full h-full object-cover object-top" />
+                  </div>
+                  <div className="p-8 md:p-10" style={{ background: person.dark ? OCEAN_DEEP : "#fff" }}>
+                    <p className="font-display font-black uppercase tracking-widest text-[12px] mb-4" style={{ color: CYAN }}>{person.role}</p>
+                    <h3 className="font-black uppercase tracking-tighter mb-4 text-[clamp(24px,3vw,36px)] leading-[0.88]" style={{ color: person.dark ? "#fff" : INK }}>{person.name}</h3>
+                    <p className="font-body text-[15px] leading-[1.6]" style={{ color: person.dark ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.75)" }}>{person.bio}</p>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+            <motion.div variants={fadeUp} className="overflow-hidden rounded-[12px] mb-16" style={{ height: "clamp(200px, 25vw, 380px)", boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+              <img src={beachSetup.src} alt="Daily beach setup at Atlantis Beach" className="w-full h-full object-cover" />
+            </motion.div>
+            <motion.div variants={fadeUp}>
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-start mb-12">
+                <div className="md:col-span-5">
+                  <p className="font-display font-black uppercase tracking-widest text-[12px] mb-6" style={{ color: CYAN }}>IKO Certified</p>
+                  <h3 className="font-black uppercase tracking-tighter text-[clamp(28px,3.5vw,48px)] leading-[0.88]" style={{ color: INK }}>The Instructors</h3>
+                </div>
+                <div className="md:col-span-7">
+                  <p className="font-body text-[15px] leading-[1.7] text-[rgba(0,0,0,0.75)]">Riders first, instructors second. They push the boat in and out of the water every session because they want you on the water as much as you do. Dutch, English, Spanish, Papiamentu. They speak your language.</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {instructors.map((instructor, i) => (
+                  <div key={i} className="flex flex-col overflow-hidden rounded-[12px]" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+                    <div style={{ height: "clamp(160px, 18vw, 260px)", overflow: "hidden" }}>
+                      <img src={instructor.photo} alt={instructor.name} className="w-full h-full object-cover object-top" />
+                    </div>
+                    <div className="px-4 py-3 bg-white">
+                      <p className="font-display font-black text-[11px] uppercase tracking-widest" style={{ color: "rgba(0,0,0,0.65)" }}>{instructor.name}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+      <section className="py-20 md:py-28 text-center" style={{ background: OCEAN }}>
+        <div className="max-w-3xl mx-auto px-8 sm:px-14 lg:px-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.h2 variants={fadeUp} className="font-black text-white uppercase tracking-tighter mb-6 text-[clamp(52px,9vw,120px)] leading-[0.88]">Find Us<br />at the Beach</motion.h2>
+            <motion.p variants={fadeUp} className="text-white/75 font-body text-[15px] uppercase tracking-widest mb-10">Atlantis Beach, Bonaire. Every day from 9am.</motion.p>
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/lessons" className="font-display font-black uppercase tracking-widest px-8 py-4 text-[11px] rounded-none" style={{ background: CYAN, color: "#fff", border: "none" }}>Book a Lesson</Link>
+              <a href="https://wa.me/5997015483?text=Hi!%20I'd%20like%20to%20know%20more%20about%20Kiteboarding%20Bonaire" target="_blank" rel="noopener noreferrer" className="font-display font-black uppercase tracking-widest px-8 py-4 text-[11px] rounded-none" style={{ background: "transparent", color: "#fff", border: `2px solid ${CYAN}` }}>WhatsApp Us</a>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }
