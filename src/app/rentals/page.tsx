@@ -8,7 +8,8 @@ import rentalsHero from "@/assets/rentals-hero.jpg";
 import beachSetup from "@/assets/beach-setup.jpg";
 
 const WHATSAPP_URL = "https://wa.me/5997015483?text=Hi!%20I'm%20interested%20in%20equipment%20rentals%20at%20Bonaire";
-const VIKING_RENTALS_ID = "g37000000040000005a124865";
+const VIKING_BUNDLE_ID = "3700000022000000b8e211e0"; // Bundle booking
+const VIKING_RENTALS_ID = "g37000000040000005a124865"; // Fallback individual
 
 // Design system colors
 const OCEAN = "hsl(213,85%,38%)";
@@ -26,7 +27,7 @@ const fadeInOnly = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: 
 
 type Duration = "half" | "full";
 
-// ToggleSwitch Component (from lessons page)
+// ToggleSwitch Component
 function ToggleSwitch({
   leftLabel,
   rightLabel,
@@ -86,369 +87,205 @@ function ToggleSwitch({
 
 const tiers = [
   {
-    name: "Standard",
-    tagline: "Reliable freeride gear",
-    desc: "Great condition, regularly serviced. Everything you need for a solid session.",
+    name: "Kites",
+    tagline: "Complete kite sets",
+    desc: "Kite and bar included. Ready to go.",
     featured: false,
     rows: [
-      { product: "Complete set", half: "$80", full: "$120", note: "Kite, bar, board, harness" },
-      { product: "Kite and bar", half: "$60", full: "$90", note: "Bring your own board" },
-      { product: "Board only", half: "$25", full: "$40", note: "Twintip or directional" },
+      { product: "Kite set", half: "$80", full: "$100", note: "Includes kite and bar" },
     ],
   },
   {
-    name: "Premium",
-    tagline: "Top-of-line gear",
-    desc: "Latest models, premium brands. Plus $20 per session over Standard.",
-    featured: true,
+    name: "Kite Only",
+    tagline: "Kite and bar",
+    desc: "Bring your own board.",
+    featured: false,
     rows: [
-      { product: "Complete set", half: "$100", full: "$145", note: "Kite, bar, board, harness" },
-      { product: "Kite and bar", half: "$80", full: "$115", note: "Bring your own board" },
-      { product: "Board only", half: "$45", full: "$65", note: "Twintip or directional" },
+      { product: "Kite rental", half: "$60", full: "$80", note: "Kite and bar only" },
     ],
   },
   {
-    name: "Foil",
-    tagline: "Experienced foilers only",
-    desc: "Assessment required before rental. Ask us on the beach or via WhatsApp.",
+    name: "Foils",
+    tagline: "Hydrofoil rentals",
+    desc: "Experience foiling on Atlantis Beach.",
     featured: false,
     rows: [
-      { product: "Foil complete set", half: "$100", full: "$140", note: "Wing, bar, foilboard" },
-      { product: "Foilboard only", half: "$50", full: "$75", note: "Own wing and bar" },
+      { product: "Foil rental", half: "$100", full: "$140", note: "Includes foil board" },
+    ],
+  },
+  {
+    name: "Boards",
+    tagline: "Twintips and directional",
+    desc: "Bring your own kite.",
+    featured: false,
+    rows: [
+      { product: "Board rental", half: "$25", full: "$40", note: "Twintip or directional" },
+    ],
+  },
+  {
+    name: "Storage",
+    tagline: "Locker rentals",
+    desc: "Safe storage for your gear.",
+    featured: false,
+    rows: [
+      { product: "Locker per day", half: "$10", full: "$10", note: "" },
+      { product: "Locker per week", half: "$60", full: "$60", note: "" },
+      { product: "Locker per month", half: "$180", full: "$180", note: "" },
     ],
   },
 ];
 
-const bundles = [
-  { sessions: "1 session", price: "$80", per: "$80 per session", savings: "", best: false },
-  { sessions: "3 sessions", price: "$225", per: "$75 per session", savings: "Save $15", best: false },
-  { sessions: "5 sessions", price: "$360", per: "$72 per session", savings: "Save $40", best: false },
-  { sessions: "10 sessions", price: "$680", per: "$68 per session", savings: "Save $120", best: true },
-];
-
-function TierCard({ tier, duration, onBook }: { tier: (typeof tiers)[0]; duration: Duration; onBook: () => void }) {
-  const mainPrice = duration === "half" ? tier.rows[0].half : tier.rows[0].full;
-
-  return (
-    <div
-      className={`flex flex-col h-full rounded-[12px] p-8 md:p-10 ${
-        tier.featured ? "bg-[hsl(213,85%,22%)]" : "bg-white"
-      }`}
-      style={{
-        boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)",
-      }}
-    >
-      {/* Label and Name */}
-      <div className="mb-8">
-        <p className={`text-[12px] uppercase tracking-[0.12em] font-bold mb-2 ${tier.featured ? "text-[hsl(186,100%,42%)]" : "text-[hsl(186,100%,42%)]"}`}>
-          {tier.tagline}
-        </p>
-        <h3 className={`text-[clamp(28px,3.8vw,48px)] font-black uppercase tracking-tighter leading-[0.88] ${tier.featured ? "text-white" : "text-[hsl(0,0%,10%)]"}`}>
-          {tier.name}
-        </h3>
-      </div>
-
-      {/* Price Animation */}
-      <AnimatePresence mode="wait">
-        <motion.div key={mainPrice} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="mb-2">
-          <div className={`text-[clamp(48px,5vw,72px)] font-black leading-none ${tier.featured ? "text-white" : "text-[hsl(0,0%,10%)]"}`}>
-            {mainPrice}
-          </div>
-        </motion.div>
-      </AnimatePresence>
-
-      <p className={`text-[11px] uppercase tracking-[0.12em] font-bold mb-8 ${tier.featured ? "text-[hsl(186,100%,42%)]" : "text-[hsl(0,0%,10%)]/50"}`}>
-        Complete set. {duration === "half" ? "Half day 3-4h" : "Full day 5-8h"}.
-      </p>
-
-      {/* Product Rows */}
-      <div className={`flex-1 border-t mb-8 pt-6 space-y-5 ${tier.featured ? "border-white/10" : "border-[hsl(0,0%,10%)]/10"}`}>
-        {tier.rows.map((row, i) => (
-          <div key={i} className="flex items-start justify-between gap-4">
-            <div>
-              <p className={`text-[14px] font-bold ${tier.featured ? "text-white" : "text-[hsl(0,0%,10%)]"}`}>{row.product}</p>
-              <p className={`text-[13px] mt-1 ${tier.featured ? "text-white/70" : "text-[hsl(0,0%,10%)]/60"}`}>{row.note}</p>
-            </div>
-            <AnimatePresence mode="wait">
-              <motion.span key={duration + i} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className={`text-[21px] font-black flex-shrink-0 ${tier.featured ? "text-white" : "text-[hsl(0,0%,10%)]"}`}>
-                {duration === "half" ? row.half : row.full}
-              </motion.span>
-            </AnimatePresence>
-          </div>
-        ))}
-      </div>
-
-      {/* CTA Button */}
-      <button
-        onClick={onBook}
-        className={`w-full py-4 text-[11px] uppercase tracking-[0.12em] font-black rounded-none transition-all ${
-          tier.featured
-            ? "bg-[hsl(186,100%,42%)] text-white hover:brightness-110"
-            : "bg-[hsl(0,0%,10%)] text-white hover:bg-[hsl(0,0%,10%)]/80"
-        }`}
-      >
-        Reserve Gear
-      </button>
-    </div>
-  );
-}
-
-export default function RentalsPage() {
+export default function Rentals() {
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [duration, setDuration] = useState<Duration>("half");
+  const [isDuration, setIsDuration] = useState(false);
 
   return (
-    <>
-      {/* ── HERO ─────────────────────────────────────────────────────── */}
-      <section className="relative min-h-[65vh] md:min-h-[75vh] overflow-hidden flex items-center justify-center">
-        <video 
-          src="/videos/hero_hyperlapse3.mp4" 
-          autoPlay 
-          muted 
-          loop 
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(5,18,40,0.3)] via-[rgba(5,18,40,0.5)] to-[rgba(5,18,40,0.8)]" />
-
-        <div className="relative z-10 px-8 sm:px-14 lg:px-20 max-w-4xl mx-auto w-full text-center">
-          <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.p variants={fadeUp} className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-6 block">
-              Gear for your Bonaire sessions
-            </motion.p>
-            <motion.h1 variants={fadeUp} className="font-black text-white uppercase tracking-tighter mb-6 text-[clamp(40px,7vw,100px)] leading-[0.88]">
-              Ride With Us
-            </motion.h1>
-            <motion.p variants={fadeUp} className="text-white/75 text-[15px] leading-[1.6] mb-10 mx-auto max-w-[500px]">
-              Travel light. We handle everything. You focus on the water, the wind, the ocean. We take care of the rest.
-            </motion.p>
-            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button onClick={() => setBookingOpen(true)} className="bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
-                Reserve Now
-              </button>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-2 border-white text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:bg-white/10 transition-all"
+    <div style={{ background: SAND }}>
+      {/* Hero */}
+      <section style={{ background: OCEAN_DEEP }} className="pt-8 pb-20 md:pb-28">
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <motion.div initial="hidden" animate="visible" variants={stagger}>
+              <motion.p variants={fadeUp} className="category-label mb-4" style={{ color: CYAN }}>
+                Rent quality gear
+              </motion.p>
+              <motion.h1
+                variants={fadeUp}
+                className="font-display font-black text-white uppercase tracking-tighter mb-6"
+                style={{ fontSize: "clamp(44px,8vw,100px)", lineHeight: 0.95 }}
               >
-                Ask Us
-              </a>
+                Rentals
+              </motion.h1>
+              <motion.p variants={fadeUp} className="font-body text-white/75 text-base leading-relaxed mb-8">
+                Everything you need, nothing you have to carry. Half day or full day. Bring your own or rent the complete setup.
+              </motion.p>
             </motion.div>
-          </motion.div>
+            <motion.div variants={fadeUp} initial="hidden" animate="visible" className="overflow-hidden rounded-lg">
+              <img src={rentalsHero.src} alt="Rental gear at Bonaire" className="w-full h-full object-cover" />
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* ── THIS IS OUR HOME (SPLIT LAYOUT) ──────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 0, background: SAND }}>
-        {/* Photo Left */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative overflow-hidden"
-          style={{ minHeight: "clamp(380px,50vw,600px)" }}
-        >
-          <img
-            src={lessonAction.src}
-            alt="Kiteboarding equipment ready for rental"
-            className="w-full h-full object-cover transition-transform duration-700"
-          />
-        </motion.div>
-
-        {/* Text Right */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="flex flex-col justify-center p-8 md:p-12 lg:p-16"
-          style={{ minHeight: "clamp(380px,50vw,600px)" }}
-        >
-          <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-5" style={{ color: CYAN }}>
-            Our home
-          </p>
-          <h2
-            className="font-black uppercase"
-            style={{
-              fontSize: "clamp(32px,4.5vw,60px)",
-              lineHeight: 0.88,
-              letterSpacing: "-0.03em",
-              marginBottom: 24,
-              color: INK,
-            }}
-          >
-            This is where<br />we belong
-          </h2>
-          <p
-            className="font-body leading-relaxed"
-            style={{
-              fontSize: 15,
-              color: "rgba(0,0,0,0.75)",
-              lineHeight: 1.7,
-            }}
-          >
-            Bring your passion for the water. We bring the gear, the guidance, and our crew. Everything you need to feel the ocean like we do. This is our home, and we want it to be yours too.
-          </p>
-        </motion.div>
-      </div>
-
-      {/* ── WHO CAN RENT ─────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 relative overflow-hidden">
-        <img
-          src={rentalsHero.src}
-          alt="Kitesurfing equipment at Atlantis Beach"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(21,40,70,0.75)] via-[rgba(21,40,70,0.82)] to-[rgba(21,40,70,0.88)]" />
-
-        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20 relative z-10">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly}>
-            <div className="mb-12">
-              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-4">Who can rent?</p>
-              <h2 className="text-[clamp(32px,4.5vw,60px)] font-black text-white uppercase tracking-tighter leading-[0.88]">We want everyone to ride</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[
-                { label: "IKO Card Level 4+", title: "Show us your card", desc: "You are on the water immediately. No assessment needed. Your card says you are ready, we trust that." },
-                { label: "Can ride upwind", title: "Free beach assessment", desc: "Twenty minutes with one of us. If you can ride, you rent. We are not gatekeepers, we just want to make sure it is real." },
-                { label: "Still learning?", title: "Book a lesson first", desc: "Come back after your course. You will be ready then, and we will give you a discount on your rental because you trained with us." },
-              ].map((item, i) => (
-                <div key={i} className="bg-white rounded-[12px] p-8 md:p-10 flex flex-col" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
-                  <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-3">{item.label}</p>
-                  <h3 className="text-[clamp(28px,3.8vw,48px)] font-black text-[hsl(0,0%,10%)] uppercase tracking-tighter leading-[0.88] mb-4">{item.title}</h3>
-                  <p className="text-[15px] text-[hsl(0,0%,10%)]/75 leading-[1.6]">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── PRICING ──────────────────────────────────────────────────── */}
-      <section id="pricing" className="py-20 md:py-28 bg-[hsl(42,35%,97%)]">
+      {/* Session Bundles */}
+      <section style={{ background: SAND }} className="py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly} className="mb-12">
-            <div className="text-center mb-10">
-              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-4">Transparent pricing</p>
-              <h2 className="text-[clamp(32px,4.5vw,60px)] font-black text-[hsl(0,0%,10%)] uppercase tracking-tighter leading-[0.88]">Choose what works for you</h2>
-            </div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="mb-10">
+            <p className="category-label mb-3" style={{ color: CYAN }}>
+              Save 15 percent
+            </p>
+            <h2 className="font-display font-black text-foreground uppercase tracking-tighter" style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}>
+              Book a full package
+            </h2>
+          </motion.div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInOnly}
+            className="p-8 md:p-12 mb-8"
+            style={{
+              background: "#fff",
+              borderRadius: 12,
+              boxShadow: "0 4px 16px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(0,0,0,0.05)",
+            }}
+          >
+            <p className="font-body text-foreground/70 text-base leading-relaxed mb-6">
+              Book a complete rental package for the day and save 15 percent. Includes kite set, board, harness, and all the gear you need to make the most of your time at Atlantis Beach. Perfect for trips or extended visits.
+            </p>
+            <a
+              href={`https://app.vikingbookings.com/widget/booking/${VIKING_BUNDLE_ID}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-3 font-display font-black text-sm uppercase tracking-widest rounded text-white transition-colors"
+              style={{ background: OCEAN, cursor: "pointer" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = OCEAN_DEEP)}
+              onMouseLeave={(e) => (e.currentTarget.style.background = OCEAN)}
+            >
+              Book a Bundle
+            </a>
+          </motion.div>
+        </div>
+      </section>
 
-            {/* Duration Toggle */}
-            <div className="mb-12 flex justify-center">
-              <div className="inline-flex flex-col gap-4 px-8 py-6 rounded-[12px]" style={{ background: "#fff", boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
-                <p className="text-center font-black uppercase tracking-[0.12em]" style={{ fontSize: 11, color: "rgba(0,0,0,0.55)" }}>
-                  Session length
-                </p>
-                <ToggleSwitch leftLabel="Half Day" rightLabel="Full Day" value={duration === "full"} onChange={v => setDuration(v ? "full" : "half")} />
-              </div>
-            </div>
+      {/* Individual Rentals */}
+      <section style={{ background: SAND }} className="py-8 md:py-16">
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="mb-12">
+            <p className="category-label mb-3" style={{ color: CYAN }}>
+              Mix and match
+            </p>
+            <h2 className="font-display font-black text-foreground uppercase tracking-tighter mb-2" style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}>
+              Rent individually
+            </h2>
+            <p className="font-body text-foreground/60 text-base">Choose your own rental combination.</p>
           </motion.div>
 
-          {/* Tier Cards Grid */}
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly} className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-6">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="mb-8 flex justify-center">
+            <ToggleSwitch leftLabel="Half Day" rightLabel="Full Day" value={isDuration} onChange={setIsDuration} />
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tiers.map((tier, i) => (
-              <TierCard key={i} tier={tier} duration={duration} onBook={() => setBookingOpen(true)} />
-            ))}
-          </motion.div>
-
-          <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly} className="text-[13px] text-[hsl(0,0%,10%)]/60 text-center">
-            Free kite swap included every session. Foil rental requires a quick beach assessment.
-          </motion.p>
-        </div>
-      </section>
-
-      {/* ── SESSION BUNDLES ───────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 relative overflow-hidden">
-        <img
-          src={beachSetup.src}
-          alt="Kitesurfing at Atlantis Beach"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[rgba(21,40,70,0.75)] via-[rgba(21,40,70,0.82)] to-[rgba(21,40,70,0.88)]" />
-
-        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20 relative z-10">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly}>
-            <div className="text-center mb-12">
-              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-4">Stay longer, go deeper</p>
-              <h2 className="text-[clamp(32px,4.5vw,60px)] font-black text-white uppercase tracking-tighter leading-[0.88] mb-4">Session bundles</h2>
-              <p className="text-white/75 text-[15px] leading-[1.6]">The more time you spend here, the deeper it gets. Join our crew.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-              {bundles.map((bundle, i) => (
-                <div key={i} className="bg-white rounded-[12px] p-6 md:p-8 text-center relative flex flex-col" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
-                  {bundle.best && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[hsl(186,100%,42%)] text-white px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] rounded-none">
-                      Best value
-                    </div>
-                  )}
-                  <p className="text-[11px] uppercase tracking-[0.12em] font-bold text-[hsl(0,0%,10%)]/55 mb-3 mt-2">{bundle.sessions}</p>
-                  <p className="text-[clamp(32px,4.5vw,60px)] font-black text-[hsl(0,0%,10%)] leading-none mb-1">{bundle.price}</p>
-                  <p className="text-[13px] text-[hsl(0,0%,10%)]/60 mb-3">{bundle.per}</p>
-                  {bundle.savings && <p className="text-[hsl(186,100%,42%)] text-[11px] font-black uppercase tracking-[0.12em]">{bundle.savings}</p>}
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center">
-              <button onClick={() => setBookingOpen(true)} className="bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
-                Book a Bundle
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── USPs ─────────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 bg-[hsl(42,35%,97%)]">
-        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-[12px] p-8 md:p-10" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
-              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-6">Every session, included</p>
-              <h3 className="text-[clamp(28px,3.8vw,48px)] font-black text-[hsl(0,0%,10%)] uppercase tracking-tighter leading-[0.88] mb-4">Free kite swap</h3>
-              <p className="text-[15px] text-[hsl(0,0%,10%)]/75 leading-[1.6]">
-                Wind picks up? Wind dies? We swap your kite for free during your session. No charge, no questions. You focus on the ride, we handle the details.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-[12px] p-8 md:p-10" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
-              <p className="text-[12px] uppercase tracking-[0.12em] font-bold text-[hsl(186,100%,42%)] mb-6">Fall in love with it</p>
-              <h3 className="text-[clamp(28px,3.8vw,48px)] font-black text-[hsl(0,0%,10%)] uppercase tracking-tighter leading-[0.88] mb-4">Try before you buy</h3>
-              <p className="text-[15px] text-[hsl(0,0%,10%)]/75 leading-[1.6]">
-                Love the gear you rented? We deduct your last rental session from the purchase price. Ask us on the beach about what we have in stock. We want you to own what you love.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── FINAL CTA ────────────────────────────────────────────────── */}
-      <section className="py-20 md:py-28 bg-[hsl(213,85%,38%)] text-center">
-        <div className="max-w-3xl mx-auto px-8 sm:px-14 lg:px-20">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={fadeInOnly}>
-            <h2 className="text-[clamp(52px,9vw,120px)] font-black text-white uppercase tracking-tighter leading-[0.88] mb-6">Ready?</h2>
-            <p className="text-white/75 text-[15px] leading-[1.6] uppercase tracking-[0.12em] mb-10">Reserve your gear. See you on the beach tomorrow.</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button onClick={() => setBookingOpen(true)} className="bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
-                Reserve Your Gear
-              </button>
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border-2 border-white text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:bg-white/10 transition-all"
+              <motion.div
+                key={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeInOnly}
+                className="p-6 md:p-8 rounded-lg"
+                style={{
+                  background: "#fff",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)",
+                }}
               >
-                WhatsApp Us
-              </a>
-            </div>
+                <p className="category-label mb-2" style={{ color: CYAN }}>
+                  {tier.tagline}
+                </p>
+                <h3 className="font-display font-black text-foreground uppercase tracking-tighter text-xl leading-tight mb-2">{tier.name}</h3>
+                <p className="font-body text-foreground/60 text-sm mb-6">{tier.desc}</p>
+
+                <div className="space-y-4">
+                  {tier.rows.map((row, idx) => {
+                    const price = isDuration ? row.full : row.half;
+                    return (
+                      <div key={idx} className="flex justify-between items-baseline gap-4">
+                        <div>
+                          <p className="font-display font-black text-foreground text-sm uppercase tracking-wide">{row.product}</p>
+                          {row.note && <p className="font-body text-foreground/50 text-xs mt-0.5">{row.note}</p>}
+                        </div>
+                        <p className="font-display font-black text-foreground text-lg flex-shrink-0">{price}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section style={{ background: SAND }} className="py-16 md:py-20">
+        <div className="max-w-7xl mx-auto px-8 sm:px-14 lg:px-20">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInOnly} className="p-8 md:p-12 text-center rounded-lg" style={{ background: OCEAN_DEEP }}>
+            <p className="category-label mb-4" style={{ color: CYAN }}>
+              Questions?
+            </p>
+            <h2 className="font-display font-black text-white uppercase tracking-tighter mb-6" style={{ fontSize: "clamp(28px,4vw,52px)", lineHeight: 0.91 }}>
+              Get in touch
+            </h2>
+            <p className="font-body text-white/75 text-base mb-8 max-w-2xl mx-auto">
+              Not sure what you need? Message us on WhatsApp or send an email. We'll help you pick the right gear for your session.
+            </p>
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="inline-block px-6 py-3 font-display font-black text-sm uppercase tracking-widest rounded text-black transition-colors" style={{ background: CYAN }} onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")} onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}>
+              Message on WhatsApp
+            </a>
           </motion.div>
         </div>
       </section>
 
       <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} title="Reserve Gear" productId={VIKING_RENTALS_ID} />
-    </>
+    </div>
   );
 }
