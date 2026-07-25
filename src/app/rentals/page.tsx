@@ -395,7 +395,7 @@ export default function RentalsPage() {
             </div>
 
             <div className="text-center">
-              <button href={`https://app.vikingbookings.com/widget/booking/${VIKING_BUNDLE_ID}`} target="_blank" rel="noopener noreferrer" className="inline-block bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
+              <a href={`https://app.vikingbookings.com/widget/booking/${VIKING_BUNDLE_ID}`} target="_blank" rel="noopener noreferrer" className="inline-block bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
                 Book a Bundle
               </a>
             </div>
