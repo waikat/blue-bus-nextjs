@@ -373,7 +373,7 @@ export default function RentalsPage() {
               <p className="text-white/75 text-[15px] leading-[1.6]">The more time you spend here, the deeper it gets. Join our crew.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
               {bundles.map((bundle, i) => (
                 <div key={i} className="bg-white rounded-[12px] p-6 md:p-8 text-center relative flex flex-col" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
                   {bundle.best && (

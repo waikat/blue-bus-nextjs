@@ -127,9 +127,9 @@ export default function AboutPage() {
                   <p className="font-body text-[15px] leading-[1.7] text-[rgba(0,0,0,0.75)]">Riders first, instructors second. They push the boat in and out of the water every session because they want you on the water as much as you do. Dutch, English, Spanish, Papiamentu. They speak your language.</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="flex gap-6 overflow-x-auto hide-scrollbar snap-x pb-4">
                 {instructors.map((instructor, i) => (
-                  <div key={i} className="flex flex-col overflow-hidden rounded-[12px]" style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
+                  <div key={i} className="flex-shrink-0 flex flex-col overflow-hidden rounded-[12px] snap-start" style={{ width: "clamp(180px, 20vw, 240px)", boxShadow: "0 1px 4px rgba(0,0,0,0.06), 0 0 0 0.5px rgba(0,0,0,0.05)" }}>
                     <div style={{ height: "clamp(160px, 18vw, 260px)", overflow: "hidden" }}>
                       <img src={instructor.photo} alt={instructor.name} className="w-full h-full object-cover object-top" />
                     </div>
