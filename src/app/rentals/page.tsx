@@ -194,6 +194,7 @@ function TierCard({ tier, duration, onBook }: { tier: (typeof tiers)[0]; duratio
 
 export default function RentalsPage() {
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [bundleOpen, setBundleOpen] = useState(false);
   const [duration, setDuration] = useState<Duration>("half");
 
   return (
@@ -390,9 +391,9 @@ export default function RentalsPage() {
             </div>
 
             <div className="text-center">
-              <a href={`https://app.vikingbookings.com/widget/booking/${VIKING_BUNDLE_ID}`} target="_blank" rel="noopener noreferrer" className="inline-block bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
+              <button onClick={() => setBundleOpen(true)} className="bg-[hsl(186,100%,42%)] text-white px-8 py-4 font-black text-[11px] uppercase tracking-[0.12em] rounded-none hover:brightness-110 transition-all">
                 Book a Bundle
-              </a>
+              </button>
             </div>
           </motion.div>
         </div>
@@ -445,6 +446,7 @@ export default function RentalsPage() {
       </section>
 
       <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} title="Reserve Gear" productId={VIKING_RENTALS_ID} />
+      <BookingModal open={bundleOpen} onOpenChange={setBundleOpen} title="Book a Bundle" productId={VIKING_BUNDLE_ID} />
     </>
   );
 }
