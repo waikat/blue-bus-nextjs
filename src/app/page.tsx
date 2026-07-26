@@ -94,7 +94,7 @@ export default function HomePage() {
           autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover"
           src="/videos/hero_hyperlapse3.mp4"
-          style={{ filter: "brightness(1.1) contrast(1.08) saturate(1.25)" }}
+          style={{ filter: "brightness(1.15) contrast(1.2) saturate(1.6)" }}
         />
         <div className="absolute inset-0" style={{
           background: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.45) 55%, hsla(213,85%,12%,0.80) 78%, hsla(213,85%,22%,0.95) 100%)"
