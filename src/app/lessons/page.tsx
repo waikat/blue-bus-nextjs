@@ -64,14 +64,14 @@ const PACKAGES: Record<string, Pkg[]> = {
   "intermediate-duo": [
     { name: "Single Session", sessions: "1 session · 3 hours", price: "\$295",   perPerson: "\$148 per person", outcome: "Goal-based",    vikingId: "37000000050000003f75f4dd", detail: "Three hours for both of you. Best when you're at a similar level.", photo: lessonBeach.src, photoPosition: "object-center" },
     { name: "Block of 3",     sessions: "3 × 2 hours",         price: "\$845",   perPerson: "\$423 per person", outcome: "IKO Level 4 to 5", badge: "Best Value", featured: true, vikingId: "g370000000f0000005b9549b2", detail: "You learn as much watching your partner as you do on the kite.", photo: photoInstructionWater.src, photoPosition: "object-center" },
-    { name: "Block of 5",     sessions: "5 × 2 hours",         price: "\$1,475", perPerson: "\$738 per person", outcome: "IKO Level 5",   vikingId: "370000001000000092d233ba", detail: "Five sessions. Real transformation for two, not just marginal gains.", photo: photoBoatSupport.src, photoPosition: "object-center" },
+    { name: "Block of 5",     sessions: "5 × 2 hours",         price: "\$1,475", perPerson: "\$738 per person", outcome: "IKO Level 5",   vikingId: "370000002b00000032ad199d", detail: "Five sessions. Real transformation for two, not just marginal gains.", photo: photoBoatSupport.src, photoPosition: "object-center" },
   ],
 };
 
 const SERVICES = [
   { tag: "For riders who already ride", title: "Coaching session",    desc: "Ninety minutes of personalized coaching on one specific skill. Master a new trick, nail your technique, perfect your upwind, or conquer a new move. You pick the focus.", price: "\$185", duration: "1.5 hrs", vikingId: "3700000006000000d1da41cf" },
   { tag: "Building confidence",         title: "Beach support",       desc: "You know how to kite. You're building trust in a new spot. We handle launch and landing (the critical parts), guide your setup, and help you in and out of the water safely. Once you're riding, you're independent, but you'll feel supported. Two hours of confidence building.", price: "\$100", duration: "2 hrs", vikingId: "370000002a00000057caa525" },
-  { tag: "IKO Affiliated Center",       title: "IKO certification",   desc: "Already riding without an official card? We evaluate and certify you at the right level. Some beaches (Miami, most of the USA, Australia) legally require a cert for safety and insurance. Level 3 gets you rental access and legal clearance worldwide.", price: "\$185", duration: "1.5 hrs", vikingId: "3700000021000000564da4f2" },
+  { tag: "IKO Affiliated Center",       title: "IKO certification",   desc: "Already riding without an official card? We evaluate and certify you at the right level. Some beaches (Miami, most of the USA, Australia) legally require a cert for safety and insurance. Level 3 gets you rental access and legal clearance worldwide.", price: "\$95", duration: "1.5 hrs", vikingId: "3700000021000000564da4f2" },
 ];
 
 const INSTRUCTORS = [
