@@ -399,7 +399,7 @@ export default function LessonsPage() {
             </p>
             <div className="flex items-center justify-between flex-wrap gap-4">
               <span className="font-display font-black text-white"
-                style={{ fontSize: "clamp(28px,3.2vw,48px)", letterSpacing: "-0.03em" }}>From \$290</span>
+                style={{ fontSize: "clamp(28px,3.2vw,48px)", letterSpacing: "-0.03em" }}>From $290</span>
               <span className="font-display font-black text-white uppercase tracking-widest py-3 px-6"
                 style={{ fontSize: 11, background: CYAN, borderRadius: 0 }}>Beginner packages</span>
             </div>
@@ -429,7 +429,7 @@ export default function LessonsPage() {
             </p>
             <div className="flex items-center justify-between flex-wrap gap-4">
               <span className="font-display font-black text-white"
-                style={{ fontSize: "clamp(28px,3.2vw,48px)", letterSpacing: "-0.03em" }}>From \$225</span>
+                style={{ fontSize: "clamp(28px,3.2vw,48px)", letterSpacing: "-0.03em" }}>From $225</span>
               <span className="font-display font-black text-white uppercase tracking-widest py-3 px-6"
                 style={{ fontSize: 11, background: "transparent", border: "1.5px solid rgba(255,255,255,0.40)", borderRadius: 0 }}>
                 Intermediate packages

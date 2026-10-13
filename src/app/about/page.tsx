@@ -21,7 +21,7 @@ const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08, de
 const fadeInOnly = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.4 } } };
 const people = [
   { name: "Rommel Rivas", role: "Owner, The Blue Bus", bio: "Kiter, Venezuelan, Bonaire local. He took the keys of the Blue Bus in 2016 and never looked back. First one on the beach, last one to leave.", photo: rommelPhoto.src, dark: true },
-  { name: "Carlos Lilue", role: "Operations", bio: "The one who makes the beach happen every day. Bus, boat, tents, chairs. Carlos sets up the world so everyone else can enjoy it.", photo: carlosPhoto.src, dark: false },
+  { name: "Carlos Lilue", role: "School Manager", bio: "The one who makes the beach happen every day. Bus, boat, tents, chairs. Carlos sets up the world so everyone else can enjoy it.", photo: carlosPhoto.src, dark: false },
 ];
 const instructors = [
   { name: "Linda", photo: instructor1.src },
