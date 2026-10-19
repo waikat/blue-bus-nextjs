@@ -144,6 +144,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${outfit.variable} ${raleway.variable}`}>
       <head>
+        {/* Google Consent Mode v2 Default State */}
+        <Script id="google-consent-mode" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+              'analytics_storage': 'denied',
+              'ad_storage': 'denied',
+              'ad_user_data': 'denied',
+              'ad_personalization': 'denied'
+            });
+          `}
+        </Script>
+
         {/* Google Analytics GA4 */}
         <Script
           strategy="afterInteractive"

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import CookieBanner from "@/components/CookieBanner";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const [weatherOpen, setWeatherOpen] = useState(false);
@@ -20,6 +21,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         {children}
       </main>
       <Footer />
+      <CookieBanner />
     </>
   );
 }
