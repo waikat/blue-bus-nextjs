@@ -62,7 +62,7 @@ const PACKAGES: Record<string, Pkg[]> = {
     { name: "Block of 5",     sessions: "5 × 2 hours",         price: "\$995", outcome: "IKO Level 5",   vikingId: "3700000007000000b4bdfd77", detail: "Five sessions. Enough to genuinely transform your riding in Bonaire's trade winds.", photo: photoBoatSupport.src, photoPosition: "object-center" },
   ],
   "intermediate-duo": [
-    { name: "Single Session", sessions: "1 session · 2 hours", price: "\$295",   perPerson: "\$148 per person", outcome: "Goal-based",    vikingId: "37000000050000003f75f4dd", detail: "Three hours for both of you. Best when you're at a similar level.", photo: lessonBeach.src, photoPosition: "object-center" },
+    { name: "Single Session", sessions: "1 session · 2 hours", price: "\$295",   perPerson: "\$148 per person", outcome: "Goal-based",    vikingId: "370000002b00000032ad199d", detail: "Two hours for both of you. Best when you're at a similar level.", photo: lessonBeach.src, photoPosition: "object-center" },
     { name: "Block of 3",     sessions: "3 × 2 hours",         price: "\$845",   perPerson: "\$423 per person", outcome: "IKO Level 4 to 5", badge: "Best Value", featured: true, vikingId: "g370000000f0000005b9549b2", detail: "You learn as much watching your partner as you do on the kite.", photo: photoInstructionWater.src, photoPosition: "object-center" },
     { name: "Block of 5",     sessions: "5 × 2 hours",         price: "\$1,475", perPerson: "\$738 per person", outcome: "IKO Level 5",   vikingId: "370000002b00000032ad199d", detail: "Five sessions. Real transformation for two, not just marginal gains.", photo: photoBoatSupport.src, photoPosition: "object-center" },
   ],
